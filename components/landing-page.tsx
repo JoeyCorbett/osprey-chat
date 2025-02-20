@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { MessagesSquare, Users, Zap, Send } from "lucide-react"
+import Link from "next/link"
 
 export default function LandingPage() {
   return (
@@ -41,10 +42,11 @@ export default function LandingPage() {
                   </p>
                 </div>
                 <div className="w-full max-w-sm space-y-2">
-                  <form className="flex space-x-2">
-                    <Input className="max-w-lg flex-1" placeholder="Enter your @go.stockton email" type="email" />
-                    <Button type="submit">Get Started</Button>
-                  </form>
+                  <Link href="/login">
+                    <Button className="w-full" size="lg">
+                      Get Started
+                    </Button>
+                  </Link>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     Start chatting for free. No credit card required.
                   </p>
@@ -240,10 +242,11 @@ export default function LandingPage() {
                   </p>
                 </div>
                 <div className="w-full max-w-sm space-y-2">
-                  <form className="flex space-x-2">
-                    <Input className="max-w-lg flex-1" placeholder="Enter your @go.stockton email" type="email" />
-                    <Button type="submit">Get Started</Button>
-                  </form>
+                  <Link href="/login">
+                    <Button className="w-full" size="lg">
+                      Get Started
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
