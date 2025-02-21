@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 export default function ChatCard() {
   return (
@@ -6,7 +6,6 @@ export default function ChatCard() {
       {/* Header */}
       <div className="flex items-center space-x-3 mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
         <Avatar>
-          <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
           <AvatarFallback>J</AvatarFallback>
         </Avatar>
         <div className="leading-tight">
