@@ -203,7 +203,7 @@ export default function LandingPage() {
                     <div>
                       <h3 className="text-lg font-semibold">Find Your Classes</h3>
                       <p className="text-gray-600 dark:text-gray-400 text-sm">
-                        Just enter your course IDs and we'll instantly 
+                        Just enter your course IDs and we&apos;ll instantly 
                         connect you to the right chat rooms.
                       </p>
                     </div>
