@@ -87,7 +87,7 @@ export default function ChatRoom() {
         <ScrollArea className="flex-1 p-4">
           <div className="space-y-4">
             {messages.map((message) => (
-              <div key={message.id} className="flex items-start space-x-3">
+              <div key={message.id} className="flex items-start space-x-3 p-1.5 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
                 <Avatar className="w-8 h-8 rounded-full">
                   <AvatarFallback className="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                     {message.sender[0]}
