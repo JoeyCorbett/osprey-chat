@@ -1,9 +1,14 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MessagesSquare, Users, Zap, Send } from "lucide-react"
-import Link from "next/link"
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { MessagesSquare, Users, Zap, Send } from 'lucide-react'
+import Link from 'next/link'
 
 export default function LandingPage() {
   return (
@@ -15,16 +20,28 @@ export default function LandingPage() {
             <span className="ml-2 text-2xl font-bold">OspreyChat</span>
           </a>
           <nav className="ml-auto flex gap-4 sm:gap-6">
-            <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            <a
+              className="text-sm font-medium hover:underline underline-offset-4"
+              href="#"
+            >
               Features
             </a>
-            <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            <a
+              className="text-sm font-medium hover:underline underline-offset-4"
+              href="#"
+            >
               FAQ
             </a>
-            <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            <a
+              className="text-sm font-medium hover:underline underline-offset-4"
+              href="#"
+            >
               About
             </a>
-            <a className="text-sm font-medium hover:underline underline-offset-4" href="#">
+            <a
+              className="text-sm font-medium hover:underline underline-offset-4"
+              href="#"
+            >
               Contact
             </a>
           </nav>
@@ -38,7 +55,9 @@ export default function LandingPage() {
                     Connect with your classmates
                   </h1>
                   <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                      OspreyChat helps you stay in touch with your classmates. Share messages, discuss coursework, and collaborate effortlessly throughout the semester.
+                    OspreyChat helps you stay in touch with your classmates.
+                    Share messages, discuss coursework, and collaborate
+                    effortlessly throughout the semester.
                   </p>
                 </div>
                 <div className="w-full max-w-sm space-y-2">
@@ -54,7 +73,7 @@ export default function LandingPage() {
               </div>
             </div>
           </section>
-          
+
           <div className="bg-gray-100 dark:bg-gray-800 -mx-12">
             <div className="px-12">
               <section className="w-full py-12 md:py-24 lg:py-32">
@@ -64,21 +83,28 @@ export default function LandingPage() {
                       <CardHeader>
                         <Users className="h-10 w-10 mb-2" />
                         <CardTitle>Class Chats</CardTitle>
-                        <CardDescription>Join chats for your classes and stay connected with classmates.</CardDescription>
+                        <CardDescription>
+                          Join chats for your classes and stay connected with
+                          classmates.
+                        </CardDescription>
                       </CardHeader>
                     </Card>
                     <Card>
                       <CardHeader>
                         <Zap className="h-10 w-10 mb-2" />
                         <CardTitle>Instant Messaging</CardTitle>
-                        <CardDescription>Send and receive messages in real-time.</CardDescription>
+                        <CardDescription>
+                          Send and receive messages in real-time.
+                        </CardDescription>
                       </CardHeader>
                     </Card>
                     <Card>
                       <CardHeader>
                         <Send className="h-10 w-10 mb-2" />
                         <CardTitle>Direct Messages</CardTitle>
-                        <CardDescription>Send private messages to your classmates directly.</CardDescription>
+                        <CardDescription>
+                          Send private messages to your classmates directly.
+                        </CardDescription>
                       </CardHeader>
                     </Card>
                   </div>
@@ -91,9 +117,12 @@ export default function LandingPage() {
             <div className="container px-4 md:px-6">
               <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
                 <div className="space-y-4">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">How it works</h2>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                    How it works
+                  </h2>
                   <p className="text-gray-500 dark:text-gray-400">
-                    Getting started with OspreyChat is easy. Follow these simple steps:
+                    Getting started with OspreyChat is easy. Follow these simple
+                    steps:
                   </p>
                   <ul className="grid gap-6">
                     <li className="flex items-center space-x-4">
@@ -102,7 +131,9 @@ export default function LandingPage() {
                       </div>
                       <div>
                         <h3 className="font-bold">Sign Up</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Create your account in seconds</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Create your account in seconds
+                        </p>
                       </div>
                     </li>
                     <li className="flex items-center space-x-4">
@@ -111,7 +142,9 @@ export default function LandingPage() {
                       </div>
                       <div>
                         <h3 className="font-bold">Join Class Chats</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Find and join your class group chats</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Find and join your class group chats
+                        </p>
                       </div>
                     </li>
                     <li className="flex items-center space-x-4">
@@ -120,7 +153,9 @@ export default function LandingPage() {
                       </div>
                       <div>
                         <h3 className="font-bold">Start Chatting</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Connect with classmates and discuss coursework</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Connect with classmates and discuss coursework
+                        </p>
                       </div>
                     </li>
                   </ul>
@@ -133,20 +168,28 @@ export default function LandingPage() {
                     <div className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-8 rounded-lg shadow-2xl">
                       <div className="flex items-center space-x-4 mb-6">
                         <Avatar>
-                          <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
+                          <AvatarImage
+                            src="/placeholder-avatar.jpg"
+                            alt="User"
+                          />
                           <AvatarFallback>U</AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="text-sm font-medium">John Doe</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">Online</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Online
+                          </p>
                         </div>
                       </div>
                       <div className="space-y-4">
                         <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
-                          <p className="text-sm">Hey, how's it going?</p>
+                          <p className="text-sm">Hey, how&apos;s it going?</p>
                         </div>
                         <div className="bg-blue-500 text-white p-3 rounded-lg ml-auto max-w-[80%]">
-                          <p className="text-sm">Great! Just trying out this new chat app. It's pretty cool!</p>
+                          <p className="text-sm">
+                            Great! Just trying out this new chat app. It&apos;s
+                            pretty cool!
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -168,18 +211,24 @@ export default function LandingPage() {
                       <CardHeader>
                         <CardTitle>Amazing App!</CardTitle>
                         <CardDescription>
-                          "ChatApp has revolutionized how I stay in touch with my friends. It's so easy to use!"
+                          &quot;ChatApp has revolutionized how I stay in touch with
+                          my friends. It&apos;s so easy to use!&quot;
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center space-x-4">
                           <Avatar>
-                            <AvatarImage src="/placeholder-avatar-1.jpg" alt="Sarah" />
+                            <AvatarImage
+                              src="/placeholder-avatar-1.jpg"
+                              alt="Sarah"
+                            />
                             <AvatarFallback>S</AvatarFallback>
                           </Avatar>
                           <div>
                             <p className="text-sm font-medium">Sarah L.</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Student</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              Student
+                            </p>
                           </div>
                         </div>
                       </CardContent>
@@ -188,18 +237,24 @@ export default function LandingPage() {
                       <CardHeader>
                         <CardTitle>Perfect for Teams</CardTitle>
                         <CardDescription>
-                          "We use ChatApp for all our team communication. It's reliable and packed with features."
+                          &quot;We use ChatApp for all our team communication. It&apos;s
+                          reliable and packed with features.&quot;
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center space-x-4">
                           <Avatar>
-                            <AvatarImage src="/placeholder-avatar-2.jpg" alt="Michael" />
+                            <AvatarImage
+                              src="/placeholder-avatar-2.jpg"
+                              alt="Michael"
+                            />
                             <AvatarFallback>M</AvatarFallback>
                           </Avatar>
                           <div>
                             <p className="text-sm font-medium">Michael R.</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Project Manager</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              Project Manager
+                            </p>
                           </div>
                         </div>
                       </CardContent>
@@ -208,18 +263,24 @@ export default function LandingPage() {
                       <CardHeader>
                         <CardTitle>Keeps Us Connected</CardTitle>
                         <CardDescription>
-                          "ChatApp helps me stay connected with my family overseas. The video calls are crystal clear!"
+                          &quot;ChatApp helps me stay connected with my family
+                          overseas. The video calls are crystal clear!&quot;
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center space-x-4">
                           <Avatar>
-                            <AvatarImage src="/placeholder-avatar-3.jpg" alt="Emily" />
+                            <AvatarImage
+                              src="/placeholder-avatar-3.jpg"
+                              alt="Emily"
+                            />
                             <AvatarFallback>E</AvatarFallback>
                           </Avatar>
                           <div>
                             <p className="text-sm font-medium">Emily C.</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Traveler</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              Traveler
+                            </p>
                           </div>
                         </div>
                       </CardContent>
@@ -238,7 +299,8 @@ export default function LandingPage() {
                     Ready to start chatting?
                   </h2>
                   <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                    Join your classmates already enjoying OspreyChat. Create an account in seconds and start chatting!
+                    Join your classmates already enjoying OspreyChat. Create an
+                    account in seconds and start chatting!
                   </p>
                 </div>
                 <div className="w-full max-w-sm space-y-2">
@@ -256,12 +318,20 @@ export default function LandingPage() {
       <div className="border-t">
         <div className="px-12">
           <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">© {new Date().getFullYear()} OspreyChat. All rights reserved.</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              © {new Date().getFullYear()} OspreyChat. All rights reserved.
+            </p>
             <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-              <a className="text-xs hover:underline underline-offset-4" href="#">
+              <a
+                className="text-xs hover:underline underline-offset-4"
+                href="#"
+              >
                 Terms of Service
               </a>
-              <a className="text-xs hover:underline underline-offset-4" href="#">
+              <a
+                className="text-xs hover:underline underline-offset-4"
+                href="#"
+              >
                 Privacy
               </a>
             </nav>
@@ -271,4 +341,3 @@ export default function LandingPage() {
     </div>
   )
 }
-
