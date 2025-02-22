@@ -10,11 +10,7 @@ import { Button } from './ui/button'
 import { Search } from 'lucide-react'
 import { useDebounce } from '@/hooks/useDebounce'
 import { ChevronRight } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -103,11 +99,13 @@ export default function CourseSearch() {
         <DialogContent>
           <DialogTitle>Enter Your Section</DialogTitle>
           {selectedCourse && (
-            <p className='text-gray-600'>{selectedCourse.code} - {selectedCourse.title}</p>
+            <p className="text-gray-600">
+              {selectedCourse.code} - {selectedCourse.title}
+            </p>
           )}
           <Input
-            type='text'
-            placeholder='Enter section (e.g., 002)'
+            type="text"
+            placeholder="Enter section (e.g., 002)"
             value={section}
             onChange={(e) => setSection(e.target.value)}
           />

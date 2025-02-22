@@ -5,15 +5,6 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
-
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu'
 import { Button } from '@/components/ui/button'
 
 import { createClient } from '@/utils/supabase/client'
@@ -57,30 +48,21 @@ export default function NavMenu() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex md:items-center md:space-x-6">
-          <NavigationMenu>
-            <NavigationMenuList className="flex space-x-4">
-              {/* Courses Dropdown */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium transition-colors hover:text-gray-700">
-                  Courses
-                </NavigationMenuTrigger>
-                <NavigationMenuContent className="p-2">
-                  <NavigationMenuLink
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
-                  >
-                    View Courses
-                  </NavigationMenuLink>
-                  <NavigationMenuLink
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
-                  >
-                    Join a Course Chatroom
-                  </NavigationMenuLink>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+          {/* My Courses Link */}
+          <Link
+            href="/chats"
+            className="text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors"
+          >
+            My Courses
+          </Link>
+
+          {/* Find Courses Link */}
+          <Link
+            href="/search"
+            className="text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors"
+          >
+            Find Courses
+          </Link>
 
           {/* Logout Button (Desktop) */}
           <Button variant="outline" onClick={handleLogout}>
@@ -91,20 +73,32 @@ export default function NavMenu() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="flex flex-col items-center space-y-4 border-t border-gray-200 p-4 md:hidden">
-          <Link
-            href="#"
-            className="text-base font-medium text-gray-700 transition-colors hover:text-gray-900"
-          >
-            Courses
-          </Link>
-          {/* Logout Button (Mobile) */}
-          <button
-            onClick={handleLogout}
-            className="w-full rounded border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-gray-100"
-          >
-            Logout
-          </button>
+        <div className="absolute top-14 left-0 w-full bg-white shadow-lg border-t border-gray-200 p-4 md:hidden z-50">
+          <div className="flex flex-col space-y-3">
+            <Link
+              href="/chats"
+              className="w-full text-center py-3 rounded-md text-gray-900 font-medium hover:bg-gray-100 transition"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              My Courses
+            </Link>
+
+            <Link
+              href="/search"
+              className="w-full text-center py-3 rounded-md text-gray-900 font-medium hover:bg-gray-100 transition"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Find Courses
+            </Link>
+
+            <Button 
+              variant="outline" 
+              onClick={handleLogout} 
+              className="w-full"
+            >
+              Logout
+            </Button>
+          </div>
         </div>
       )}
     </nav>
