@@ -42,17 +42,17 @@ export default function CourseSearch() {
   return (
     <div className="max-w-xl mx-auto p-6">
       {/* Search Bar */}
-      <div className="relative">
+      <div className="relative w-full">
         <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-          size={20}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+          size={22}
         />
         <Input
           type="text"
           value={query}
           onChange={handleChange}
           placeholder="Search courses by code or title..."
-          className="pl-10 w-full border-gray-300 focus:border-gray-500"
+          className="w-full rounded-lg border border-gray-300 bg-gray-50 px-12 py-3 text-base focus:border-gray-600 focus:ring-2 focus:ring-gray-400 transition shadow-sm"
         />
       </div>
 
