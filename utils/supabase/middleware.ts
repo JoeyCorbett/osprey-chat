@@ -54,7 +54,7 @@ export async function updateSession(request: NextRequest) {
     (request.nextUrl.pathname === '/' ||
       request.nextUrl.pathname.startsWith('/login'))
   ) {
-    return NextResponse.redirect(new URL('/courses', request.url))
+    return NextResponse.redirect(new URL('/chats', request.url))
   }
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:

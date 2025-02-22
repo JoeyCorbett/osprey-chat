@@ -4,11 +4,9 @@ import { useState, useEffect } from "react"
 import { LoginForm } from "@/components/login-form"
 
 export default function LoginPage() {
-  // Control the "zoom-in" animation
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Trigger the animation on first render
     setMounted(true)
   }, [])
 
