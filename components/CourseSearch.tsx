@@ -53,7 +53,7 @@ export default function CourseSearch() {
       {/* Course List */}
       <div className="mt-4 space-y-3">
         {!isLoading &&
-          courses.map((course: any) => (
+          courses.map((course: { id: string; code: string; title: string }) => (
             <div key={course.id}>
               <Card className="hover:shadow-md">
                 <CardContent className="p-4">
