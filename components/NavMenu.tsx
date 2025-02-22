@@ -32,7 +32,7 @@ export default function NavMenu() {
     <nav className="border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:py-4">
         {/* Left: Logo & Name */}
-        <Link href="/" className="flex items-center space-x-2">
+        <Link href="/chats" className="flex items-center space-x-2">
           <Image
             src="/light-icon.svg"
             alt="Osprey Chat Logo"
