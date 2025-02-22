@@ -49,11 +49,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  if (
-    user &&
-    (request.nextUrl.pathname === '/' ||
-      request.nextUrl.pathname.startsWith('/login'))
-  ) {
+  if (user && request.nextUrl.pathname === '/login') {
     return NextResponse.redirect(new URL('/chats', request.url))
   }
   // IMPORTANT: You *must* return the supabaseResponse object as it is.

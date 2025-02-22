@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Menu, X } from 'lucide-react'
 
 import {
   NavigationMenu,
@@ -13,20 +13,20 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/navigation-menu'
+import { Button } from '@/components/ui/button'
 
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from '@/utils/supabase/client'
 
 export default function NavMenu() {
-  const supabase = createClient();
-  const router = useRouter();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const supabase = createClient()
+  const router = useRouter()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/");
-  };
+    await supabase.auth.signOut()
+    router.replace('/')
+  }
 
   return (
     <nav className="border-b border-gray-200 bg-white">
@@ -41,7 +41,9 @@ export default function NavMenu() {
             className="cursor-pointer"
             priority
           />
-          <span className="text-lg font-semibold text-gray-900">Osprey Chat</span>
+          <span className="text-lg font-semibold text-gray-900">
+            Osprey Chat
+          </span>
         </Link>
 
         {/* Mobile Menu Button (Hamburger Icon) */}
@@ -57,7 +59,6 @@ export default function NavMenu() {
         <div className="hidden md:flex md:items-center md:space-x-6">
           <NavigationMenu>
             <NavigationMenuList className="flex space-x-4">
-              
               {/* Courses Dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-sm font-medium transition-colors hover:text-gray-700">
@@ -78,19 +79,23 @@ export default function NavMenu() {
                   </NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-
             </NavigationMenuList>
           </NavigationMenu>
 
           {/* Logout Button (Desktop) */}
-          <Button variant="outline" onClick={handleLogout}>Logout</Button>
+          <Button variant="outline" onClick={handleLogout}>
+            Logout
+          </Button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="flex flex-col items-center space-y-4 border-t border-gray-200 p-4 md:hidden">
-          <Link href="/courses" className="text-base font-medium text-gray-700 transition-colors hover:text-gray-900">
+          <Link
+            href="#"
+            className="text-base font-medium text-gray-700 transition-colors hover:text-gray-900"
+          >
             Courses
           </Link>
           {/* Logout Button (Mobile) */}
@@ -103,5 +108,5 @@ export default function NavMenu() {
         </div>
       )}
     </nav>
-  );
+  )
 }

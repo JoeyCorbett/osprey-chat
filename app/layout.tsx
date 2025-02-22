@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: 'Osprey Chat',
   description:
     'Real-time course-based chat app for Stockton University students',
+  icons: {
+    icon: '/light-icon.svg'
+  }
   }
 
 export default function RootLayout({
