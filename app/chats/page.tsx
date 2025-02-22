@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import CourseSearch from '@/components/CourseSearch'
+import NavMenu from '@/components/NavMenu'
 
 export default async function Chats() {
   const supabase = await createClient()
@@ -11,9 +12,16 @@ export default async function Chats() {
   }
 
   return (
-    <div className='max-w-2x1 mx-auto p-4'>
-      <h1 className='text-x1 font-bold-mb-4'>Search for Courses</h1>
-      <CourseSearch />
-    </div>
+    <>
+      <NavMenu />
+      <div className="mx-auto max-w-xl w-full px-4 mt-8">
+        <h1 className="text-xl font-semibold text-gray-900 text-center mb-4">
+          Search for Courses
+        </h1>
+        <div className="w-full">
+          <CourseSearch />
+        </div>
+      </div>
+    </>
   )
 }
