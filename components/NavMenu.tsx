@@ -53,7 +53,7 @@ export default function NavMenu() {
             href="/chats"
             className="text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors"
           >
-            My Courses
+            Course Chats
           </Link>
 
           {/* Find Courses Link */}
@@ -80,7 +80,7 @@ export default function NavMenu() {
               className="w-full text-center py-3 rounded-md text-gray-900 font-medium hover:bg-gray-100 transition"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              My Courses
+              Course Chats
             </Link>
 
             <Link

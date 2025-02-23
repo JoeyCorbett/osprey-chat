@@ -3,19 +3,11 @@
 import { useState } from 'react'
 import { Database } from '@/types/database.types'
 import useSWR from 'swr'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Button } from './ui/button'
+import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import { useDebounce } from '@/hooks/useDebounce'
-import { ChevronRight } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import CourseCard from '@/components/CourseCard'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -72,36 +64,13 @@ export default function CourseSearch() {
       <div className="mt-4 space-y-3">
         {!isLoading &&
           courses.map((course: Course) => (
-            <Dialog key={course.id}>
-              <DialogTrigger asChild>
-                <div>
-                  <Card className='hover:shadow-md cursor-pointer'>
-                    <CardContent className='p-4 flex justify-between items-center'>
-                      <div>
-                        <p className='text-sm text-gray-600'>{course.code}</p>
-                        <p className='font-medium'>{course.title}</p>
-                      </div>
-                      <ChevronRight className='text-gray-400' size={20} />
-                    </CardContent>
-                  </Card>
-                </div>
-              </DialogTrigger>
-              <DialogContent className='sm:top-1/2 top-[30%] transform -translate-y-1/2'>
-                <DialogTitle>Enter Your Section</DialogTitle>
-                <p className='text-gray-600'>
-                  {course.code} - {course.title}
-                </p>
-                <Input
-                  type='text'
-                  placeholder='Enter section (e.g., 002)'
-                  value={section}
-                  onChange={(e) => setSection(e.target.value)}
-                />
-                <Button>Join Chat</Button>
-              </DialogContent>
-            </Dialog>
-          ))
-          }
+            <CourseCard
+              key={course.id}
+              course={course}
+              section={section}
+              setSection={setSection}
+            />
+          ))}
       </div>
 
       {/* Error Handling */}
