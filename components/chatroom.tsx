@@ -1,128 +1,113 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { MessageCircle, Send, Hash } from "lucide-react"
-
-// Placeholder data (same as before)
-const chatRooms = [
-  { id: 1, name: "MATH-2226-001" },
-  { id: 2, name: "PHYS-1121-002" },
-  { id: 3, name: "CSCI-1100-003" },
-  { id: 4, name: "ENGL-1101-001" },
-  { id: 5, name: "CHEM-1211-002" },
-]
+import { useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Send, Hash, ArrowLeft } from "lucide-react";
 
 const initialMessages = [
-  { id: 1, sender: "Alice", content: "Hey everyone! Did anyone understand the homework assignment?" },
-  { id: 2, sender: "Bob", content: "I'm still working on it. Question 3 is tricky." },
-  { id: 3, sender: "Charlie", content: "I can help with that. Let's break it down step by step." },
-  { id: 4, sender: "David", content: "Thanks for offering to help, Charlie!" },
-  { id: 5, sender: "Eva", content: "I'm stuck on question 5. Any tips?" },
-  { id: 6, sender: "Frank", content: "For question 5, remember to use the formula we learned last week." },
-  { id: 7, sender: "Grace", content: "Oh, that makes sense. Thanks, Frank!" },
-  { id: 8, sender: "Henry", content: "Is anyone else having trouble with the online submission system?" },
-  {
-    id: 9,
-    sender: "Ivy",
-    content: "Yeah, it seems to be down for maintenance. The professor just sent an email about it.",
-  },
-  { id: 10, sender: "Jack", content: "Thanks for the heads up, Ivy. I was worried it was just me." },
-]
+  { id: 1, sender: "Alice", content: "Hey everyone! Did anyone understand the homework?", avatarUrl: "/avatars/alice.png" },
+  { id: 2, sender: "Bob", content: "I'm still working on it. Question 3 is tricky.", avatarUrl: "/avatars/bob.png" },
+  { id: 3, sender: "You", content: "Yeah, I struggled with that too, but I figured it out!", avatarUrl: "/avatars/you.png" },
+  { id: 4, sender: "You", content: "ok", avatarUrl: "/avatars/you.png" },
+];
 
 export default function ChatRoom() {
-  const [selectedRoom, setSelectedRoom] = useState(chatRooms[0])
-  const [messages, setMessages] = useState(initialMessages)
-  const [newMessage, setNewMessage] = useState("")
+  const router = useRouter();
+  const params = useParams();
+  const courseId = params.courseId || "Unknown Course";
 
-  const sendMessage = (e: React.FormEvent) => {
-    e.preventDefault()
+  const [messages, setMessages] = useState(initialMessages);
+  const [newMessage, setNewMessage] = useState("");
+
+  const sendMessage = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
     if (newMessage.trim()) {
-      setMessages([...messages, { id: messages.length + 1, sender: "You", content: newMessage }])
-      setNewMessage("")
+      setMessages([...messages, { id: messages.length + 1, sender: "You", content: newMessage, avatarUrl: "/avatars/you.png" }]);
+      setNewMessage("");
     }
-  }
+  };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar with chat rooms */}
-      <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-sm">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <h1 className="text-xl font-bold flex items-center text-gray-800 dark:text-gray-200">
-            <MessageCircle className="mr-2 h-6 w-6" />
-            Osprey Chat
-          </h1>
-        </div>
-        <ScrollArea className="flex-grow">
-          <div className="p-2">
-            {chatRooms.map((room) => (
-              <Button
-                key={room.id}
-                variant={selectedRoom.id === room.id ? "secondary" : "ghost"}
-                className="w-full justify-start mb-1 py-2 px-3 h-auto text-sm font-medium"
-                onClick={() => setSelectedRoom(room)}
-              >
-                <Hash className="mr-2 h-4 w-4" />
-                {room.name}
-              </Button>
-            ))}
-          </div>
-        </ScrollArea>
+    <div className="flex flex-col h-screen bg-background">
+      {/* Header */}
+      <div className="border-b border-border bg-card p-4 flex items-center space-x-2">
+        <Button variant="ghost" size="icon" onClick={() => router.push("/chats")}>
+          <ArrowLeft className="h-5 w-5 text-muted-foreground" />
+        </Button>
+        <Hash className="h-5 w-5 text-muted-foreground" />
+        <h2 className="text-lg font-semibold">{courseId} Chat</h2>
       </div>
 
-      {/* Main chat area */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
-        {/* Chat room header */}
-        <div className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center">
-          <Hash className="mr-2 h-5 w-5 text-gray-500 dark:text-gray-400" />
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">{selectedRoom.name}</h2>
-        </div>
+      {/* Messages Area */}
+      <ScrollArea className="flex-1 p-4">
+        {messages.map((message, index) => {
+          const isUser = message.sender === "You";
+          const isSameSenderAsPrev = index > 0 && messages[index - 1].sender === message.sender;
 
-        {/* Messages area */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div key={message.id} className="flex items-start space-x-3 p-1.5 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
-                <Avatar className="w-8 h-8 rounded-full">
-                  <AvatarFallback className="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                    {message.sender[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">{message.sender}</span>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{message.content}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
-
-        {/* Message input */}
-        <div className="p-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-          <form onSubmit={sendMessage} className="flex gap-2">
-            <Input
-              placeholder="Type your message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              className="flex-1 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600"
-            />
-            <Button
-              type="submit"
-              size="icon"
-              className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 hover:bg-gray-700 dark:hover:bg-gray-300"
+          return (
+            <div
+              key={message.id}
+              className={`flex ${isUser ? "justify-end" : "justify-start"} gap-2 mb-3 last:mb-0`}
             >
-              <Send className="h-4 w-4" />
-              <span className="sr-only">Send</span>
-            </Button>
-          </form>
-        </div>
+              {/* Avatar (for non-user) -- only if this message is from a new sender */}
+              {!isUser && !isSameSenderAsPrev && (
+                <div className="self-end">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={message.avatarUrl} alt={`${message.sender}'s avatar`} />
+                    <AvatarFallback>{message.sender.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                </div>
+              )}
+
+              {/* Message Bubble */}
+              <div
+                className={`max-w-[75%] px-4 py-3 text-sm leading-relaxed rounded-xl ${
+                  isUser
+                    ? "bg-primary text-primary-foreground rounded-br-md"
+                    : "bg-accent text-accent-foreground rounded-bl-md"
+                }`}
+              >
+                {/* Sender label if not user and not same as previous */}
+                {!isUser && !isSameSenderAsPrev && (
+                  <span className="block text-xs font-medium text-muted-foreground mb-1">
+                    {message.sender}
+                  </span>
+                )}
+                <p className="text-sm">{message.content}</p>
+              </div>
+
+              {/* Avatar (for user) -- only if this message is from a new sender */}
+              {isUser && !isSameSenderAsPrev && (
+                <div className="self-end">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={message.avatarUrl} alt="Your avatar" />
+                    <AvatarFallback>Y</AvatarFallback>
+                  </Avatar>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </ScrollArea>
+
+      {/* Message Input (Added Extra Bottom Padding) */}
+      <div className="p-4 pb-6 border-t border-border bg-card">
+        <form onSubmit={sendMessage} className="flex gap-2">
+          <Input
+            placeholder="Type your message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            className="flex-1 bg-muted border-border"
+          />
+          <Button type="submit" size="icon" className="bg-primary text-primary-foreground hover:bg-primary/80">
+            <Send className="h-4 w-4" />
+          </Button>
+        </form>
       </div>
     </div>
-  )
+  );
 }
-
