@@ -24,7 +24,7 @@ type Course = Database['public']['Tables']['courses']['Row']
 export default function CourseSearch() {
   const [query, setQuery] = useState('')
   const debouncedQuery = useDebounce(query, 300)
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
+  //const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
   const [section, setSection] = useState('')
 
   const { data, error, isLoading } = useSWR(
