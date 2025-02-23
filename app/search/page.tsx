@@ -15,9 +15,6 @@ export default async function Search() {
     <>
       <NavMenu />
       <div className="mx-auto max-w-xl w-full px-4 mt-8">
-        <h1 className="text-xl font-semibold text-gray-900 text-center mb-4">
-          Search for Courses
-        </h1>
         <div className="w-full">
           <CourseSearch />
         </div>
