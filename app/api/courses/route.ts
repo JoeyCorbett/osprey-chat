@@ -17,18 +17,19 @@ export async function GET(req: Request) {
   // Split the normalized query into a prefix and number
   const prefix = normalizedQuery.match(/[a-zA-Z]+/)?.[0] || ''
   const number = normalizedQuery.match(/\d+/)?.[0] || ''
-  // TODO: Filter out course section OR add support for it
-  // TODO: Add support for course titles
 
+  // TODO: Filter out course section OR add support for it
+
+  // Search for courses with the prefix and number or title
   const { data, error } = await supabase
     .from('courses')
     .select('*')
-    .ilike('code', `${prefix}%${number}%`)
+    .or(`code.ilike.${prefix}%${number}%,title.ilike.%${normalizedQuery}%`)
     .limit(15)
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
 
-    return NextResponse.json({ courses: data})
+  return NextResponse.json({ courses: data})
 }
