@@ -11,12 +11,20 @@ export async function GET(req: Request) {
     return NextResponse.json({ courses: [] })
   }
 
-  const { data, error} = await supabase
+  // Remove non-alphanumeric chars from query (mainly used to filter out dashes)
+  const normalizedQuery = query.replace(/[^a-zA-Z0-9\s]/g, '').trim()
+
+  // Split the normalized query into a prefix and number
+  const prefix = normalizedQuery.match(/[a-zA-Z]+/)?.[0] || ''
+  const number = normalizedQuery.match(/\d+/)?.[0] || ''
+  // TODO: Filter out course section OR add support for it
+  // TODO: Add support for course titles
+
+  const { data, error } = await supabase
     .from('courses')
     .select('*')
-    .or(`code.ilike.%${query}%, title.ilike.%${query}%`)
+    .ilike('code', `${prefix}%${number}%`)
     .limit(15)
-
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
