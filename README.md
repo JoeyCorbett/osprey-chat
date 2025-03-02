@@ -1,4 +1,5 @@
 # Osprey Chat
+⚠️ **Still in Development** ⚠️
 
 Osprey Chat is a real-time messaging platform for Stockton University students. Instantly join course chat rooms and connect with classmates.
 
