@@ -20,7 +20,6 @@ export async function POST(req: Request) {
 
     // Check ceiling for section num
     const sectionNumber = parseInt(section, 10)
-
     if (isNaN(sectionNumber) || sectionNumber < 0 || sectionNumber > 50) {
       return NextResponse.json(
         { error: 'Section must be between 000 and 050' },
@@ -28,8 +27,8 @@ export async function POST(req: Request) {
       )
     }
 
+    // Get authenticated user
     const { data: userData, error: userError } = await supabase.auth.getUser()
-
     if (userError || !userData.user) {
       return NextResponse.json(
         { error: 'User must be logged in' },
@@ -37,12 +36,12 @@ export async function POST(req: Request) {
       )
     }
     const userId = userData.user.id
-    
+
     // Check if user already joined more than 5 rooms
     const { count, error: countError } = await supabase
-    .from('course_members')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', userId)
+      .from('course_members')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
 
     if (countError || count === null) {
       console.error('Supabase error (checking room count)')
@@ -69,16 +68,13 @@ export async function POST(req: Request) {
     if (courseError) {
       console.error('Supabase Error (fetching course)')
       return NextResponse.json(
-        { error: 'Database error when fetching course'},
-        { status: 500 }
+        { error: 'Database error when fetching course' },
+        { status: 500 },
       )
     }
 
     if (!courseData) {
-      return NextResponse.json(
-        { error: 'course not found'},
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'course not found' }, { status: 404 })
     }
 
     // Check if room exists
@@ -139,68 +135,44 @@ export async function POST(req: Request) {
       )
 
       // Room doesn't exist, create room, then add
-    } else {
-      // Get course ID
-      const { data: courseData, error: courseError } = await supabase
-      .from('courses')
+    }
+    // Create new room
+    const newRoom: CourseRoomInsert = {
+      course_id: courseData.id,
+      section: section,
+    }
+
+    const { data: newRoomData, error: newRoomError } = await supabase
+      .from('course_rooms')
+      .insert([newRoom])
       .select('id')
-      .eq('code', course_id)
       .single()
 
-      if (courseError) {
-        console.error('Supabase Error (fetching course)')
-        return NextResponse.json(
-          { error: 'Database error when fetching course'},
-          { status: 500 }
-        )
-      }
-
-      if (!courseData) {
-        return NextResponse.json(
-          { error: 'course not found'},
-          { status: 404 }
-        )
-      }
-      
-      const newRoom: CourseRoomInsert = {
-        course_id: courseData.id,
-        section: section,
-      }
-
-      // Create new room
-      const { data: newRoomData, error: newRoomError } = await supabase
-        .from('course_rooms')
-        .insert([newRoom])
-        .select('id')
-        .single()
-
-      if (newRoomError) {
-        console.error('Supabase error (inserting new room)', newRoomError)
-        return NextResponse.json(
-          { error: 'Failed to create new room' },
-          { status: 500 },
-        )
-      }
-
-      if (!newRoomData) {
-        return NextResponse.json(
-          { error: 'Failed to retrieve new room data' },
-          { status: 500 },
-        )
-      }
-
-      // Insert user into new room
-      const insertResult = await insertUserIntoRoom(userId, newRoomData.id)
-
-      if (insertResult.error) {
-        return NextResponse.json({ error: insertResult.error }, { status: 500 })
-      }
-      return NextResponse.json({
-        message: 'Room successfully created and user inserted',
-        userId: userId,
-        roomId: newRoomData.id,
-      })
+    if (newRoomError) {
+      console.error('Supabase error (inserting new room)', newRoomError)
+      return NextResponse.json(
+        { error: 'Failed to create new room' },
+        { status: 500 },
+      )
     }
+
+    if (!newRoomData) {
+      return NextResponse.json(
+        { error: 'Failed to retrieve new room data' },
+        { status: 500 },
+      )
+    }
+
+    // Insert user into new room
+    const insertResult = await insertUserIntoRoom(userId, newRoomData.id)
+    if (insertResult.error) {
+      return NextResponse.json({ error: insertResult.error }, { status: 500 })
+    }
+    return NextResponse.json({
+      message: 'Room successfully created and user inserted',
+      userId: userId,
+      roomId: newRoomData.id,
+    })
   } catch (error) {
     console.error('Unexpected error:', error)
     return NextResponse.json(
