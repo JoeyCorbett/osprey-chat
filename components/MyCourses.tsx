@@ -1,19 +1,6 @@
 import { MessageCircle } from 'lucide-react'
 import { createClient } from '@/utils/supabase/server'
-import Link from 'next/link'
-
-// Update interfaces to match Supabase's return format
-interface Course {
-  id: string
-  code: string
-  title: string
-}
-
-interface CourseRoom {
-  id: string
-  section: string
-  courses: Course
-}
+import CourseList from '@/components/CourseList'
 
 export default async function MyCourses() {
   const supabase = await createClient()
@@ -23,9 +10,6 @@ export default async function MyCourses() {
     return <p>You must be logged in to view courses.</p>
   }
 
-  const userId = user.user.id
-
-  // Get typed data from Supabase
   const { data: courseRooms, error } = await supabase
     .from('course_members')
     .select(
@@ -34,7 +18,7 @@ export default async function MyCourses() {
       course_rooms (id, section, courses (id, code, title))
     `,
     )
-    .eq('user_id', userId)
+    .eq('user_id', user.user.id)
 
   if (error || courseRooms === null) {
     console.error('Error fetching courses', error)
@@ -47,25 +31,7 @@ export default async function MyCourses() {
         <MessageCircle className="w-6 h-6 text-gray-900" />
         <h1 className="text-2xl font-bold text-gray-900">Course Chats</h1>
       </div>
-
-      <div className="mt-6 flex flex-col gap-4">
-        {courseRooms.map((course) => {
-          // Use type assertion to help TypeScript understand the structure
-          const courseRoom = course.course_rooms as unknown as CourseRoom
-          const courseInfo = courseRoom.courses
-
-          return (
-            <Link href={`/room/${course.room_id}`} key={course.room_id}>
-              <div className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <h2 className="font-medium">
-                  {courseInfo.code} - {courseRoom.section}
-                </h2>
-                <p className="text-sm text-gray-600 mt-1">{courseInfo.title}</p>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
+        <CourseList initialCourses={courseRooms} />
     </div>
-  )
+  ) 
 }
