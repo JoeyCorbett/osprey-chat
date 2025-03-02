@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ChevronRight } from 'lucide-react'
 import { Database } from '@/types/database.types'
-import JoinChatButton from '@/components/JoinChatButton'
+import JoinCourseButton from '@/components/JoinCourseButton'
 import {
   Dialog,
   DialogContent,
@@ -57,7 +57,7 @@ export default function CourseCard({
           pattern="\d{3}"
           inputMode="numeric"
         />
-        <JoinChatButton courseCode={course.code} section={section} />
+        <JoinCourseButton courseCode={course.code} section={section} />
       </DialogContent>
     </Dialog>
   )
