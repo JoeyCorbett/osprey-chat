@@ -4,15 +4,15 @@ import Link from 'next/link'
 
 // Update interfaces to match Supabase's return format
 interface Course {
-  id: string;
-  code: string;
-  title: string;
+  id: string
+  code: string
+  title: string
 }
 
 interface CourseRoom {
-  id: string;
-  section: string;
-  courses: Course; // Not an array, based on your data
+  id: string
+  section: string
+  courses: Course
 }
 
 export default async function MyCourses() {
@@ -28,10 +28,12 @@ export default async function MyCourses() {
   // Get typed data from Supabase
   const { data: courseRooms, error } = await supabase
     .from('course_members')
-    .select(`
+    .select(
+      `
       room_id,
       course_rooms (id, section, courses (id, code, title))
-    `)
+    `,
+    )
     .eq('user_id', userId)
 
   if (error || courseRooms === null) {
@@ -46,22 +48,24 @@ export default async function MyCourses() {
         <h1 className="text-2xl font-bold text-gray-900">Course Chats</h1>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="mt-6 flex flex-col gap-4">
         {courseRooms.map((course) => {
           // Use type assertion to help TypeScript understand the structure
-          const courseRoom = course.course_rooms as unknown as CourseRoom;
-          const courseInfo = courseRoom.courses;
-          
+          const courseRoom = course.course_rooms as unknown as CourseRoom
+          const courseInfo = courseRoom.courses
+
           return (
             <Link href={`/room/${course.room_id}`} key={course.room_id}>
               <div className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <h2 className="font-medium">{courseInfo.code} - {courseRoom.section}</h2>
+                <h2 className="font-medium">
+                  {courseInfo.code} - {courseRoom.section}
+                </h2>
                 <p className="text-sm text-gray-600 mt-1">{courseInfo.title}</p>
               </div>
             </Link>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }
