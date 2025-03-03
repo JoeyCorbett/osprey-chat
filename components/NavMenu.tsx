@@ -25,10 +25,10 @@ export default function NavMenu() {
         {/* Left: Logo & Name */}
         <Link href="/chats" className="flex items-center space-x-2">
           <Image
-            src="/light-icon.svg"
+            src="/light-icon.png"
             alt="Osprey Chat Logo"
-            width={32}
-            height={32}
+            width={28}
+            height={28}
             className="cursor-pointer"
             priority
           />
