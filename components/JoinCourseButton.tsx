@@ -1,5 +1,4 @@
-'use client'
-
+import { useState } from 'react'
 import { Button } from './ui/button'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
@@ -14,8 +13,12 @@ export default function JoinCourseButton({
   section,
 }: JoinChatButtonProps) {
   const router = useRouter()
+  const [isJoining, setIsJoining] = useState(false)
 
   const handleJoin = async (courseCode: string, section: string) => {
+    if (isJoining) return
+    setIsJoining(true)
+
     const res = await fetch('/api/chats', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -26,17 +29,20 @@ export default function JoinCourseButton({
 
     if (!res.ok) {
       toast.error(data.error || data.message)
+      setIsJoining(false)
       return
     }
 
     router.push('/chats')
-    
+
     setTimeout(() => {
       toast.success(data.message)
     }, 500)
   }
 
   return (
-    <Button onClick={() => handleJoin(courseCode, section)}>Join Chat</Button>
+    <Button disabled={isJoining} onClick={() => handleJoin(courseCode, section)}>
+      {isJoining ? 'Joining...' : 'Join Chat'}
+    </Button>
   )
 }
