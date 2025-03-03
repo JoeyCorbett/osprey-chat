@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { EllipsisVertical } from 'lucide-react'
 import {
@@ -6,6 +7,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 interface CourseActionsProps {
   roomId: string
@@ -13,6 +24,8 @@ interface CourseActionsProps {
 }
 
 export default function CourseActions({ roomId, onLeave }: CourseActionsProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
   const handleLeave = async () => {
     onLeave(roomId)
 
@@ -37,13 +50,37 @@ export default function CourseActions({ roomId, onLeave }: CourseActionsProps) {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <EllipsisVertical />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem onClick={handleLeave}>Leave Course</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <EllipsisVertical />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => setIsOpen(true)}>
+            Leave Course
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Leave Course?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to leave this course? You will lose access
+              to it&apos;s discussions and resources, but you can rejoin at any time.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleLeave}>
+              Leave Course
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
