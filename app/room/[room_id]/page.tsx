@@ -22,7 +22,7 @@ interface Room {
 export default async function RoomPage({
   params,
 }: {
-  params: { room_id: string }
+  params: Promise<{room_id: string}>
 }) {
   const supabase = await createClient()
 

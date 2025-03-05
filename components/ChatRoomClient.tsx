@@ -22,7 +22,7 @@ export default function ChatRoomClient({ roomId }: ChatRoomClientProps) {
     // Initial fetch
     const fetchMessages = async () => {
       try {
-        const res = await fetch(`/api/messages/${roomId}`)
+        const res = await fetch(`/api/messages?roomId=${roomId}`)
         if (!res.ok) throw new Error('Failed to fetch messages')
         setMessages(await res.json())
       } catch (err) {

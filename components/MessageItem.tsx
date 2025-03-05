@@ -1,20 +1,14 @@
-// components/MessageItem.tsx
 'use client'
 
-import React from 'react'
+import { Database } from '@/types/database.types'
 
-interface Message {
-  id: string
-  content: string
-  senderName: string
-  created_at: string
-}
+type Message = Database['public']['Tables']['messages']['Row']
 
 export default function MessageItem({ message }: { message: Message }) {
   return (
     <div>
       <p className="text-sm text-gray-500">
-        {message.senderName} — {(new Date(message.created_at), 'hh:mm a')}
+        {message.user_id} — {(new Date(message.created_at), 'hh:mm a')}
       </p>
       <div className="text-base text-gray-900">{message.content}</div>
     </div>

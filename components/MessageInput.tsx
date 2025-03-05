@@ -1,11 +1,10 @@
-// components/MessageInput.tsx
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface MessageInputProps {
   roomId: string
-  // onSendMessage?: (content: string) => void // if you want parent to handle logic
 }
 
 export default function MessageInput({ roomId }: MessageInputProps) {
@@ -15,10 +14,19 @@ export default function MessageInput({ roomId }: MessageInputProps) {
     e.preventDefault()
     if (!value.trim()) return
 
-    // Option 1: Call a Next.js API route to send the message
-    // Option 2: Insert directly into Supabase
-    // Option 3: Emit socket.io event
+    const res = await fetch(`/api/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ roomId, content: value }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
 
+    if (!res.ok) {
+      console.error('Failed to send message')
+      toast.error('Failed to send message. Please try again.')
+      return
+    }
     setValue('')
   }
 

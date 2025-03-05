@@ -1,12 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
-import { parse } from 'url'
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const supabase = await createClient()
 
-  const { query } = parse(req.url!, true)
-  const roomId = query.roomId as string
+  const searchParams = req.nextUrl.searchParams
+  const roomId = searchParams.get('roomId')
 
   const { data: user, error: userError } = await supabase.auth.getUser()
   if (userError || !user?.user) {
@@ -39,7 +38,7 @@ export async function GET(req: Request) {
     )
   }
 
-  return NextResponse.json(messages)
+  return NextResponse.json(messages, { status: 200 })
 }
 
 export async function POST(req: Request) {
@@ -58,14 +57,14 @@ export async function POST(req: Request) {
     .eq('user_id', user.user.id)
     .eq('room_id', roomId)
     .single()
-  
-  if (membershipError || !membership ) {
+
+  if (membershipError || !membership) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
   const { data: message, error: messageError } = await supabase
     .from('messages')
-    .insert({ 
+    .insert({
       content,
       room_id: roomId,
       user_id: user.user.id,
