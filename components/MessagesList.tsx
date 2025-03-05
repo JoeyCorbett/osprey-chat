@@ -1,14 +1,9 @@
-// components/MessagesList.tsx
 'use client'
 
+import { Database } from '@/types/database.types'
 import MessageItem from './MessageItem'
 
-interface Message {
-  id: string
-  content: string
-  senderName: string
-  created_at: string
-}
+type Message = Database['public']['Tables']['messages']['Row']
 
 interface MessagesListProps {
   messages: Message[]

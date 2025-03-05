@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { createClient } from '@/utils/supabase/client'
 import MessagesList from './MessagesList'
 import { Database } from '@/types/database.types'
 
@@ -10,30 +11,53 @@ interface ChatRoomClientProps {
   roomId: string
 }
 
+const supabase = createClient()
+
 export default function ChatRoomClient({ roomId }: ChatRoomClientProps) {
   const [messages, setMessages] = useState<Message[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    // 1. Fetch initial messages from an API or direct from Supabase
+    // Initial fetch
     const fetchMessages = async () => {
-      const res = await fetch(`/api/messages/${roomId}`)
-      const data = await res.json()
-      setMessages(data)
+      try {
+        const res = await fetch(`/api/messages/${roomId}`)
+        if (!res.ok) throw new Error('Failed to fetch messages')
+        setMessages(await res.json())
+      } catch (err) {
+        setError(err as Error)
+      } finally {
+        setIsLoading(false)
+      }
     }
+
+    // Real-time subscription
+    const subscription = supabase
+      .channel(`room-${roomId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `room_id=eq.${roomId}`,
+        },
+        (payload) => {
+          setMessages((prev) => [...prev, payload.new] as Message[])
+        },
+      )
+      .subscribe()
 
     fetchMessages()
 
-    // 2. Subscribe to real-time updates (Supabase Realtime or socket.io)
-    
-    
-    // 3. Update state with new messages
-
     return () => {
-      // Unsubscribe from real-time on unmount
+      supabase.removeChannel(subscription)
     }
   }, [roomId])
 
-  return (
-    <MessagesList messages={messages} />
-  )
+  if (error) return <p className="text-red-500">Failed to load messages.</p>
+  if (isLoading) return <p>Loading messages...</p>
+
+  return <MessagesList messages={messages} />
 }
