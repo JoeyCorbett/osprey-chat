@@ -23,4 +23,4 @@ Osprey Chat is a real-time messaging platform for Stockton University students. 
 2. **Search & join** your course chat rooms.  
 3. **Start chatting** with classmates instantly.  
 
-👉 **Visit**: [osprey-chat.vercel.app](https://osprey-chat.vercel.app/)  
+👉 **Visit**: [osprey.chat](https://osprey.chat/)  
