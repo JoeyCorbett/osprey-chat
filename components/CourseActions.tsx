@@ -17,6 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 
 interface CourseActionsProps {
   roomId: string
@@ -52,11 +53,17 @@ export default function CourseActions({ roomId, onLeave }: CourseActionsProps) {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
-          <EllipsisVertical />
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 hover:bg-gray-100 rounded-full"
+          >
+            <EllipsisVertical className="h-4 w-4" />
+          </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => setIsOpen(true)}>
+        <DropdownMenuContent align="end" className="w-32">
+          <DropdownMenuItem onClick={() => setIsOpen(true)} className="px-3 py-2">
             Leave Course
           </DropdownMenuItem>
         </DropdownMenuContent>
