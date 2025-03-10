@@ -2,8 +2,6 @@
 
 import { Database } from '@/types/database.types'
 import MessageItem from './MessageItem'
-import { ScrollArea } from './ui/scroll-area'
-import { useEffect, useRef } from 'react'
 
 type Message = Database['public']['Tables']['messages']['Row'] & {
   profiles: Database['public']['Tables']['profiles']['Row'] | null
