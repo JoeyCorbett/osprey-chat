@@ -52,7 +52,7 @@ export default async function RoomPage({
   const mobileFormat = baseFormat
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-dvh">
       <header className="p-4 flex items-center justify-between border-b bg-white">
         <Link href="/chats" className="p-2 rounded-full hover:bg-gray-100 transition-colors">
           <ArrowLeft className="w-6 h-6" />
@@ -68,9 +68,10 @@ export default async function RoomPage({
         </button>
       </header>
 
-      {/* Chat messages */}
-      <main className="flex-1 overflow-y-auto bg-gray-50 p-4">
-        <ChatRoomClient roomId={room_id} user_id={user.user.id} />
+      <main className="flex-1 overflow-y-auto bg-gray-50">
+        <div className='h-full'>
+          <ChatRoomClient roomId={room_id} user_id={user.user.id} />
+        </div>
       </main>
 
       {/* Message input */}

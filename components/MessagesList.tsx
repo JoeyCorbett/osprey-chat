@@ -23,8 +23,7 @@ export default function MessagesList({
   return (
     <div className="flex flex-col max-w-2xl mx-auto w-full gap-3 p-4">
       {messages.map((msg) => {
-        const profile =
-          userProfiles?.[msg.user_id] ||
+        const profile = userProfiles?.[msg.user_id] ||
           msg.profiles || {
             id: msg.user_id,
             username: 'Unknown User',
