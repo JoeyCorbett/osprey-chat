@@ -54,7 +54,10 @@ export default async function RoomPage({
   return (
     <div className="flex flex-col h-dvh">
       <header className="p-4 flex items-center justify-between border-b bg-white">
-        <Link href="/chats" className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+        <Link
+          href="/chats"
+          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+        >
           <ArrowLeft className="w-6 h-6" />
         </Link>
 
@@ -69,12 +72,11 @@ export default async function RoomPage({
       </header>
 
       <main className="flex-1 overflow-y-auto bg-gray-50">
-        <div className='h-full'>
+        <div className="h-full">
           <ChatRoomClient roomId={room_id} user_id={user.user.id} />
         </div>
       </main>
 
-      {/* Message input */}
       <footer className="p-4 border-t bg-white">
         <MessageInput roomId={room_id} />
       </footer>
