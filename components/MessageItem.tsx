@@ -14,6 +14,7 @@ interface MessageItemProps {
 }
 
 export default function MessageItem({ message, user_id }: MessageItemProps) {
+        
   const isUserMessage = message.user_id === user_id
   const profile = message.profiles || {
     username: 'Unknown User',
