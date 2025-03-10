@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import MessagesList from './MessagesList'
 import { Database } from '@/types/database.types'
-import { Skeleton } from './ui/skeleton'
 
 type Message = Database['public']['Tables']['messages']['Row'] & {
   profiles: Database['public']['Tables']['profiles']['Row'] | null
@@ -103,19 +102,29 @@ export default function ChatRoomClient({
     }
   }, [roomId])
 
-  if (error) return <p className="text-red-500">Failed to load messages.</p>
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full w-full text-center">
+        <p className="text-red-600 font-semibold text-lg">
+          Something went wrong.
+        </p>
+        <p className="text-gray-600 text-sm mb-4">
+          We couldn&apos;t load messages. Please check your connection and try
+          again.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        >
+          Retry
+        </button>
+      </div>
+    )
+  }
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-3 h-[70vh] w-full max-w-2xl mx-auto">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex gap-2 items-center">
-            <Skeleton className="w-10 h-10 rounded-full" />
-            <div className="space-y-2">
-              <Skeleton className="w-40 h-4 rounded-md" />
-              <Skeleton className="w-60 h-4 rounded-md" />
-            </div>
-          </div>
-        ))}
+      <div className="flex items-center justify-center h-full w-full">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-blue-500" />
       </div>
     )
   }

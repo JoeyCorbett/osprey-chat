@@ -11,14 +11,10 @@ type Message = Database['public']['Tables']['messages']['Row'] & {
 interface MessageItemProps {
   message: Message
   user_id: string
-  isSameSenderAsPrev: boolean
 }
 
-export default function MessageItem({
-  message,
-  isSameSenderAsPrev,
-  user_id,
-}: MessageItemProps) {
+export default function MessageItem({ message, user_id }: MessageItemProps) {
+        
   const isUserMessage = message.user_id === user_id
   const profile = message.profiles || {
     username: 'Unknown User',
@@ -29,39 +25,50 @@ export default function MessageItem({
     <div
       className={`flex items-end ${
         isUserMessage ? 'justify-end' : 'justify-start'
-      } ${isSameSenderAsPrev ? 'mb-2' : 'mt-4 mb-2'}`}
+      } mb-3`}
     >
-      {!isUserMessage && !isSameSenderAsPrev && (
+      {!isUserMessage && (
         <Image
           src={profile.avatar_url || '/default-avatar.png'}
           alt={profile.username || 'User'}
-          width={32}
-          height={32}
-          className="w-8 h-8 rounded-full mr-2"
+          width={36}
+          height={36}
+          className="w-9 h-9 rounded-full mr-3"
         />
       )}
 
       <div
-        className={`relative px-4 py-2 max-w-[75%] text-sm rounded-lg ${
-          isUserMessage ? 'bg-blue-700 text-white' : 'bg-gray-200 text-black'
-        } shadow-md`}
+        className={`relative px-4 py-3 max-w-[75%] text-sm rounded-xl ${
+          isUserMessage
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-100 border text-gray-900'
+        } shadow-sm`}
       >
-        {!isSameSenderAsPrev && (
-          <p className="text-xs text-gray-400 mb-1">
-            {profile.username || 'Unknown User'} •{' '}
-            {format(new Date(message.created_at), 'hh:mm a')}
-          </p>
-        )}
+        <p
+          className={`text-xs font-semibold ${
+            isUserMessage ? 'text-white' : 'text-gray-700'
+          } mb-1`}
+        >
+          {profile.username || 'Unknown User'}{' '}
+          <span
+            className={`text-xs font-normal ${
+              isUserMessage ? 'text-white' : 'text-gray-700'
+            }`}
+          >
+            • {format(new Date(message.created_at), 'hh:mm a')}
+          </span>
+        </p>
+
         <p className="text-base leading-relaxed">{message.content}</p>
       </div>
 
-      {isUserMessage && !isSameSenderAsPrev && (
+      {isUserMessage && (
         <Image
           src={profile.avatar_url || '/default-avatar.png'}
           alt="Your Profile"
-          width={32}
-          height={32}
-          className="w-8 h-8 rounded-full ml-2"
+          width={36}
+          height={36}
+          className="w-9 h-9 rounded-full ml-3"
         />
       )}
     </div>

@@ -74,7 +74,7 @@ export default function CourseSearch() {
 
       <div 
         ref={containerRef}
-        className="h-[calc(100vh-280px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pr-2"
+        className="overflow-y-auto pr-2"
       >
         {/* Loading State */}
         {isLoading && (
