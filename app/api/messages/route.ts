@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
 
   const { data: messages, error } = await supabase
     .from('messages')
-    .select('id, content, created_at, user_id')
+    .select('id, content, created_at, user_id, profiles(username, avatar_url)')
     .eq('room_id', roomId)
     .limit(100)
     .order('created_at', { ascending: true })

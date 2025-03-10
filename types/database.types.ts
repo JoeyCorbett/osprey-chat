@@ -112,7 +112,32 @@ export type Database = {
             referencedRelation: "course_rooms"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "messages_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          id: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          id: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          id?: string
+          username?: string
+        }
+        Relationships: []
       }
     }
     Views: {

@@ -66,7 +66,7 @@ export default async function RoomPage({
       </header>
 
       <main className="flex-1 overflow-y-auto bg-gray-50 p-4">
-        <ChatRoomClient roomId={room_id} />
+        <ChatRoomClient roomId={room_id} user_id={user.user.id}/>
       </main>
 
       <footer className="p-4 border-t bg-white">

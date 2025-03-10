@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from '@/components/ui/dialog'
 
 type Course = Database['public']['Tables']['courses']['Row']
@@ -40,6 +41,9 @@ export default function CourseCard({
       </DialogTrigger>
       <DialogContent className="sm:top-1/2 top-[30%] transform -translate-y-1/2">
         <DialogTitle>Enter Your Section</DialogTitle>
+        <DialogDescription>
+        Enter the section number for this course to join the chat.
+      </DialogDescription>
         <p className="text-gray-600">
           {course.code} - {course.title}
         </p>
