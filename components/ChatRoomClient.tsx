@@ -31,20 +31,30 @@ export default function ChatRoomClient({
     // Fetch initial messages from API
     const fetchMessages = async () => {
       try {
+        setIsLoading(true);
         const res = await fetch(`/api/messages?roomId=${roomId}`)
         if (!res.ok) throw new Error('Failed to fetch messages')
 
         const fetchedMessages = await res.json()
-        setMessages(fetchedMessages)
-
+        
+        // Cache profiles
         fetchedMessages.forEach((msg: Message) => {
           if (msg.profiles && !userProfilesRef.current[msg.user_id]) {
             userProfilesRef.current[msg.user_id] = msg.profiles
           }
         })
+        
+        // Set messages immediately
+        setMessages(fetchedMessages)
+        
+        // Use a small timeout to ensure DOM is ready
+        setTimeout(() => {
+          setIsLoading(false)
+          console.log("Loading complete, messages:", fetchedMessages.length);
+        }, 100);
       } catch (err) {
+        console.error('Error fetching messages:', err);
         setError(err as Error)
-      } finally {
         setIsLoading(false)
       }
     }
@@ -104,7 +114,7 @@ export default function ChatRoomClient({
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full w-full text-center">
+      <div className="flex flex-col items-center justify-center h-full w-full text-center p-4">
         <p className="text-red-600 font-semibold text-lg">
           Something went wrong.
         </p>
@@ -121,6 +131,7 @@ export default function ChatRoomClient({
       </div>
     )
   }
+  
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full w-full">
@@ -130,10 +141,12 @@ export default function ChatRoomClient({
   }
 
   return (
-    <MessagesList
-      messages={messages}
-      user_id={user_id}
-      userProfiles={userProfilesRef.current}
-    />
+    <div className="h-full">
+      <MessagesList
+        messages={messages}
+        user_id={user_id}
+        userProfiles={userProfilesRef.current}
+      />
+    </div>
   )
 }

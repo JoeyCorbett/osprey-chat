@@ -52,7 +52,7 @@ export default function MessageInput({ roomId }: MessageInputProps) {
       <button
         className={`p-2 flex items-center justify-center rounded-lg transition ${
           value.trim()
-            ? 'bg-blue-600 hover:bg-blue-700 text-white'
+            ? 'bg-blue-600 hover:bg-blue-700 text-white border'
             : 'bg-gray-100 cursor-not-allowed border'
         }`}
         type="submit"

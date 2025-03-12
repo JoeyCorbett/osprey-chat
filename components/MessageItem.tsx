@@ -29,31 +29,31 @@ export default function MessageItem({
 
   return (
     <div
-      className={`flex items-end mb-1 ${
+      className={`flex items-end ${
         isUserMessage ? 'justify-end' : 'justify-start'
-      }
-      }`}
+      } ${showTimestamp ? 'mt-4' : 'mt-1'}`}
     >
-      {/* how avatar only for the first message in a group OR if a 5-minute gap exists */}
+      {/* show avatar only for the first message in a group OR if a 5-minute gap exists */}
       {showTimestamp && !isUserMessage && (
         <Image
           src={profile.avatar_url || '/default-avatar.png'}
           alt={profile.username || 'User'}
           width={36}
           height={36}
-          className="w-9 h-9 rounded-full mr-3"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full mr-2 sm:mr-3 flex-shrink-0"
+          referrerPolicy="no-referrer"
         />
       )}
 
       {/* Adjust margin only for grouped messages  */}
       <div
-        className={`relative px-4 py-2 max-w-[75%] text-sm rounded-lg border ${
+        className={`relative px-3 py-2 sm:px-4 sm:py-2 max-w-[80%] sm:max-w-[75%] text-sm rounded-lg border ${
           isUserMessage
             ? `bg-blue-600 text-white ${
-                isSameSenderAsPrev && !showTimestamp ? 'mr-12' : ''
+                isSameSenderAsPrev && !showTimestamp ? 'mr-10 sm:mr-12' : ''
               }`
             : `bg-gray-100 text-gray-900 ${
-                isSameSenderAsPrev && !showTimestamp ? 'ml-12' : ''
+                isSameSenderAsPrev && !showTimestamp ? 'ml-10 sm:ml-12' : ''
               }`
         } shadow-sm`}
       >
@@ -62,7 +62,7 @@ export default function MessageItem({
           <p
             className={`text-xs font-semibold ${
               isUserMessage ? 'text-white' : 'text-gray-700'
-            } mb-2`}
+            } mb-1 sm:mb-2`}
           >
             {profile.username || 'Unknown User'}{' '}
             <span
@@ -75,7 +75,7 @@ export default function MessageItem({
           </p>
         )}
 
-        <p className="text-base leading-relaxed">{message.content}</p>
+        <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">{message.content}</p>
       </div>
 
       {/* Show avatar only for the first sent message in a group OR if a 5-minute gap exists */}
@@ -85,7 +85,8 @@ export default function MessageItem({
           alt="Your Profile"
           width={32}
           height={32}
-          className="w-9 h-9 rounded-full ml-3"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full ml-2 sm:ml-3 flex-shrink-0"
+          referrerPolicy="no-referrer"
         />
       )}
     </div>

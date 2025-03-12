@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Database } from '@/types/database.types'
 import MessageItem from './MessageItem'
-import { MessageCircle } from 'lucide-react'
+import { MessageCircle, ArrowDown } from 'lucide-react'
 
 type Message = Database['public']['Tables']['messages']['Row'] & {
   profiles: Database['public']['Tables']['profiles']['Row'] | null
@@ -22,63 +22,201 @@ export default function MessagesList({
   user_id,
   userProfiles,
 }: MessagesListProps) {
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [showScrollButton, setShowScrollButton] = useState(false)
+  const [isFirstLoad, setIsFirstLoad] = useState(true)
+  const [isTouching, setIsTouching] = useState(false)
 
+  // Memoize the scroll check function to avoid recreating it on every render
+  const checkIfNearBottom = useCallback(() => {
+    if (!scrollContainerRef.current) return true
+
+    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current
+    // Use a larger threshold on mobile for better UX
+    const threshold = window.innerWidth < 768 ? 200 : 150
+    return scrollHeight - scrollTop - clientHeight < threshold
+  }, [])
+
+  // Handle initial scroll and subsequent message additions
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: 'smooth',
-      })
+    if (messages.length > 0) {
+      if (isFirstLoad) {
+        const timeoutId = setTimeout(() => {
+          if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop =
+              scrollContainerRef.current.scrollHeight
+          }
+          setIsFirstLoad(false)
+        }, 50)
+
+        return () => clearTimeout(timeoutId)
+      }
+      // For new messages when user is near bottom, scroll smoothly
+      else if (scrollContainerRef.current && !isTouching) {
+        const isNearBottom = checkIfNearBottom()
+
+        if (isNearBottom) {
+          // Use requestAnimationFrame for smoother scrolling on mobile
+          requestAnimationFrame(() => {
+            if (scrollContainerRef.current) {
+              scrollContainerRef.current.scrollTo({
+                top: scrollContainerRef.current.scrollHeight,
+                behavior: 'smooth',
+              })
+            }
+          })
+        } else {
+          setShowScrollButton(true)
+        }
+      }
     }
-  }, [messages])
+  }, [messages, isFirstLoad, checkIfNearBottom, isTouching])
+
+  // Add scroll event listener to show/hide scroll button with debounce for performance
+  useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout
+
+    const handleScroll = () => {
+      // Clear previous timeout to debounce the scroll event
+      clearTimeout(scrollTimeout)
+
+      // Set a new timeout to check scroll position after scrolling stops
+      scrollTimeout = setTimeout(() => {
+        const isNearBottom = checkIfNearBottom()
+        setShowScrollButton(!isNearBottom)
+      }, 100)
+    }
+
+    const scrollContainer = scrollContainerRef.current
+    if (scrollContainer) {
+      // Use passive listener for better performance
+      scrollContainer.addEventListener('scroll', handleScroll, {
+        passive: true,
+      })
+
+      // Initial check
+      handleScroll()
+
+      return () => {
+        clearTimeout(scrollTimeout)
+        scrollContainer.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [checkIfNearBottom])
+
+  // Add touch event listeners to prevent auto-scrolling during touch
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+
+    const handleTouchStart = () => setIsTouching(true)
+    const handleTouchEnd = () => {
+      // Small delay to ensure touch is fully complete
+      setTimeout(() => setIsTouching(false), 300)
+    }
+
+    container.addEventListener('touchstart', handleTouchStart, {
+      passive: true,
+    })
+    container.addEventListener('touchend', handleTouchEnd, { passive: true })
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart)
+      container.removeEventListener('touchend', handleTouchEnd)
+    }
+  }, [])
+
+  const handleScrollToBottom = () => {
+    if (scrollContainerRef.current) {
+      requestAnimationFrame(() => {
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTo({
+            top: scrollContainerRef.current.scrollHeight,
+            behavior: 'smooth',
+          })
+        }
+      })
+
+      setShowScrollButton(false)
+    }
+  }
 
   return (
-    <div
-      ref={scrollRef}
-      className="flex flex-col max-w-2xl gap-3 mx-auto w-full p-4 min-h-[80dvh] flex-1 relative"
-    >
-      {messages.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="flex flex-col items-center text-gray-500">
-            <MessageCircle className="w-14 h-14 text-gray-400 mb-3" />
-            <p className="text-lg font-semibold">No messages yet</p>
-            <p className="text-sm text-gray-400">
-              Start the conversation for this course!
-            </p>
-          </div>
+    <div className="h-full flex flex-col relative">
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto scroll-smooth overscroll-contain"
+        style={{ scrollbarWidth: 'thin' }}
+      >
+        <div className="flex flex-col h-full">
+          {messages.length === 0 ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="flex flex-col items-center text-center text-gray-500 px-4">
+                <MessageCircle className="w-12 h-12 sm:w-14 sm:h-14 text-gray-400 mb-3" />
+                <p className="text-lg font-semibold">No messages yet</p>
+                <p className="text-sm text-gray-400 max-w-xs">
+                  Start the conversation for this course!
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col mt-auto">
+              <div className="max-w-2xl gap-2 mx-auto w-full p-3 sm:p-4">
+                {messages.map((msg, index) => {
+                  const prevMessage = messages[index - 1]
+                  const isSameSenderAsPrev =
+                    index > 0 && messages[index - 1].user_id === msg.user_id
+
+                  const resetGroupBasedOnTime =
+                    !prevMessage ||
+                    new Date(msg.created_at).getTime() -
+                      new Date(prevMessage.created_at).getTime() >
+                      5 * 60 * 1000
+
+                  const shouldShowAvatarAndUsername =
+                    !isSameSenderAsPrev || resetGroupBasedOnTime
+
+                  const profile = userProfiles?.[msg.user_id] ||
+                    msg.profiles || {
+                      id: msg.user_id,
+                      username: 'Unknown User',
+                      avatar_url: null,
+                    }
+                  return (
+                    <MessageItem
+                      key={msg.id}
+                      message={{ ...msg, profiles: profile }}
+                      user_id={user_id}
+                      isSameSenderAsPrev={isSameSenderAsPrev}
+                      showTimestamp={shouldShowAvatarAndUsername}
+                    />
+                  )
+                })}
+
+                {/* Add a small space at the bottom for better UX */}
+                <div className="h-4" />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Scroll to bottom button - optimized for mobile */}
+      {showScrollButton && messages.length > 0 && !isFirstLoad && (
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none z-10">
+          <button
+            onClick={handleScrollToBottom}
+            className="bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 active:bg-blue-800 transition-all duration-200 flex items-center gap-1 px-3 py-2 pointer-events-auto animate-fadeIn"
+            aria-label="Scroll to bottom"
+          >
+            <span className="text-xs font-medium hidden sm:inline">
+              New messages
+            </span>
+            <span className="text-xs font-medium sm:hidden">New</span>
+            <ArrowDown className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
-      {messages.map((msg, index) => {
-        const prevMessage = messages[index - 1]
-        const isSameSenderAsPrev =
-          index > 0 && messages[index - 1].user_id === msg.user_id
-
-        const resetGroupBasedOnTime =
-          !prevMessage ||
-          new Date(msg.created_at).getTime() -
-            new Date(prevMessage.created_at).getTime() >
-            5 * 60 * 1000
-
-        const shouldShowAvatarAndUsername =
-          !isSameSenderAsPrev || resetGroupBasedOnTime
-
-        const profile = userProfiles?.[msg.user_id] ||
-          msg.profiles || {
-            id: msg.user_id,
-            username: 'Unknown User',
-            avatar_url: null,
-          }
-        return (
-          <MessageItem
-            key={msg.id}
-            message={{ ...msg, profiles: profile }}
-            user_id={user_id}
-            isSameSenderAsPrev={isSameSenderAsPrev}
-            showTimestamp={shouldShowAvatarAndUsername}
-          />
-        )
-      })}
     </div>
   )
 }
