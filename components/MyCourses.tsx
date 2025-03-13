@@ -31,7 +31,7 @@ export default async function MyCourses() {
         <MessageCircle className="w-6 h-6 text-gray-900" />
         <h1 className="text-2xl font-bold text-gray-900">Course Chats</h1>
       </div>
-        <CourseList initialCourses={courseRooms} />
+      <CourseList initialCourses={courseRooms} />
     </div>
-  ) 
+  )
 }

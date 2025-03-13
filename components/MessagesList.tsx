@@ -193,7 +193,6 @@ export default function MessagesList({
                   )
                 })}
 
-                {/* Add a small space at the bottom for better UX */}
                 <div className="h-4" />
               </div>
             </div>

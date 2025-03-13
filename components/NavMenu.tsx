@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 import { createClient } from '@/utils/supabase/client'

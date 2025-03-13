@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
     // Check ceiling for section num
     const sectionNumber = parseInt(section, 10)
-    if (isNaN(sectionNumber) || sectionNumber < 0 || sectionNumber > 50) {
+    if (isNaN(sectionNumber) || sectionNumber < 1 || sectionNumber > 50) {
       return NextResponse.json(
         { error: 'Section must be between 000 and 050' },
         { status: 400 },

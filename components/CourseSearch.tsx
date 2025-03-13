@@ -1,14 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Database } from '@/types/database.types'
 import useSWR from 'swr'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
-import { Search, ArrowUp } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useDebounce } from '@/hooks/useDebounce'
 import CourseCard from '@/components/CourseCard'
-import { Button } from '@/components/ui/button'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -18,7 +17,6 @@ export default function CourseSearch() {
   const [query, setQuery] = useState('')
   const debouncedQuery = useDebounce(query, 300)
   const [section, setSection] = useState('')
-  const [showScrollTop, setShowScrollTop] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const { data, error, isLoading } = useSWR(
@@ -30,25 +28,6 @@ export default function CourseSearch() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value)
-  }
-
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
-    const handleScroll = () => {
-      setShowScrollTop(container.scrollTop > 300)
-    }
-
-    container.addEventListener('scroll', handleScroll)
-    return () => container.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const scrollToTop = () => {
-    containerRef.current?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
   }
 
   return (
@@ -72,10 +51,7 @@ export default function CourseSearch() {
         />
       </div>
 
-      <div 
-        ref={containerRef}
-        className="overflow-y-auto pr-2"
-      >
+      <div ref={containerRef} className="overflow-y-auto pr-2">
         {/* Loading State */}
         {isLoading && (
           <div className="space-y-2">
@@ -112,16 +88,6 @@ export default function CourseSearch() {
           <p className="mt-4 text-gray-500 text-center">No courses found.</p>
         )}
       </div>
-
-      {showScrollTop && (
-        <Button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 rounded-full p-3 shadow-lg hover:shadow-xl transition-all"
-          size="icon"
-        >
-          <ArrowUp className="h-5 w-5" />
-        </Button>
-      )}
     </div>
   )
 }

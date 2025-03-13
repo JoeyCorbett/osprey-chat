@@ -47,15 +47,18 @@ export default function CourseActions({ roomId, onLeave }: CourseActionsProps) {
       return
     }
 
-    toast.success('Successfully left course')
+    toast.success('Successfully left course', {
+      position: 'bottom-right',
+      closeButton: false,
+    })
   }
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             className="h-8 w-8 hover:bg-gray-100 rounded-full"
           >
@@ -63,7 +66,10 @@ export default function CourseActions({ roomId, onLeave }: CourseActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem onClick={() => setIsOpen(true)} className="px-3 py-2">
+          <DropdownMenuItem
+            onClick={() => setIsOpen(true)}
+            className="px-3 py-2"
+          >
             Leave Course
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -75,7 +81,8 @@ export default function CourseActions({ roomId, onLeave }: CourseActionsProps) {
             <AlertDialogTitle>Leave Course?</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to leave this course? You will lose access
-              to it&apos;s discussions and resources, but you can rejoin at any time.
+              to it&apos;s discussions and resources, but you can rejoin at any
+              time.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
