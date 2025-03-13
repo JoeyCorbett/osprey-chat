@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { mutate } from 'swr'
 import { Button } from './ui/button'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
@@ -44,6 +45,7 @@ export default function JoinCourseButton({
       return
     }
 
+    mutate('/api/my-courses', undefined, { revalidate: true })
     router.push('/chats')
 
     setTimeout(() => {

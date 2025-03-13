@@ -1,10 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import CourseActions from '@/components/CourseActions'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 
 interface Course {
   id: string
@@ -36,36 +33,9 @@ interface CourseListProps {
 }
 
 export default function CourseList({ initialCourses }: CourseListProps) {
-  const [courses, setCourses] = useState(initialCourses)
-  const router = useRouter()
-
-  const onLeave = (roomId: string) => {
-    const prevCourses = courses
-    setCourses(courses.filter((course) => course.room_id !== roomId))
-
-    return () => setCourses(prevCourses)
-  }
-
-  if (courses.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center text-center">
-        <h2 className="text-lg font-semibold text-gray-900">
-          You&apos;re not in any courses yet
-        </h2>
-        <p className="text-sm text-gray-600 mt-2">
-          Join a course to start participating in discussions and accessing
-          resources.
-        </p>
-        <Button className="m-4" onClick={() => router.push('/search')}>
-          Find Courses
-        </Button>
-      </div>
-    )
-  }
-
   return (
     <div className="mt-6 flex flex-col gap-4">
-      {courses.map((course) => {
+      {initialCourses.map((course) => {
         const courseRoom = course.course_rooms as unknown as CourseRoom
         const courseInfo = courseRoom.courses
 
@@ -83,7 +53,7 @@ export default function CourseList({ initialCourses }: CourseListProps) {
               </div>
             </Link>
 
-            <CourseActions roomId={course.room_id} onLeave={onLeave} />
+            <CourseActions roomId={course.room_id} />
           </div>
         )
       })}

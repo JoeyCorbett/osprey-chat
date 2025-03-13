@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { mutate } from 'swr'
 import { toast } from 'sonner'
 import { EllipsisVertical } from 'lucide-react'
+import { Database } from '@/types/database.types'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,18 +21,24 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 
+type course_members = Database['public']['Tables']['course_members']['Row']
+
 interface CourseActionsProps {
   roomId: string
-  onLeave: (roomId: string) => () => void
 }
 
-export default function CourseActions({ roomId, onLeave }: CourseActionsProps) {
+export default function CourseActions({ roomId }: CourseActionsProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleLeave = async () => {
-    onLeave(roomId)
-
-    const rollback = onLeave(roomId)
+    mutate(
+      '/api/my-courses',
+      (currentCourses: course_members[] | undefined) =>
+        (currentCourses ?? []).filter(
+          (course: course_members) => course.room_id !== roomId,
+        ),
+      false,
+    )
 
     const res = await fetch('/api/leave-course', {
       method: 'DELETE',
@@ -43,9 +51,11 @@ export default function CourseActions({ roomId, onLeave }: CourseActionsProps) {
     if (!res.ok) {
       console.error('Error leaving course', data.error)
       toast.error('Failed to leave course')
-      rollback()
+      mutate('/api/my-courses')
       return
     }
+
+    mutate('/api/my-courses')
 
     toast.success('Successfully left course', {
       position: 'bottom-right',

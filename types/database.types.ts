@@ -36,6 +36,13 @@ export type Database = {
             referencedRelation: "course_rooms"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "course_members_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       course_rooms: {
