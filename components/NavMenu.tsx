@@ -1,28 +1,33 @@
-'use client'
-
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Menu, X, } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import LogoutButton from '@/components/LogoutButton'
+import MobileMenu from '@/components/MobileMenu'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { createClient } from '@/utils/supabase/server'
+import { LogOut } from 'lucide-react'
 
-import { createClient } from '@/utils/supabase/client'
+export default async function NavMenu() {
+  const supabase = await createClient()
 
-export default function NavMenu() {
-  const supabase = createClient()
-  const router = useRouter()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.replace('/')
-  }
+  const user = await supabase.auth.getUser()
+  const name = user?.data?.user?.user_metadata?.name
+  const avatar = user?.data?.user?.user_metadata?.avatar_url
+  const initials = name
+    .split(' ')
+    .map((n: string) => n[0])
+    .join('')
+    .toUpperCase()
 
   return (
     <nav className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:py-4">
-        {/* Left: Logo & Name */}
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 md:py-4">
         <Link href="/chats" className="flex items-center space-x-2">
           <Image
             src="/light-icon.png"
@@ -36,19 +41,7 @@ export default function NavMenu() {
             Osprey Chat
           </span>
         </Link>
-
-        {/* Mobile Menu Button (Hamburger Icon) */}
-        <button
-          className="md:hidden"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle Menu"
-        >
-          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-
-        {/* Desktop Navigation */}
         <div className="hidden md:flex md:items-center md:space-x-6">
-          {/* My Courses Link */}
           <Link
             href="/chats"
             className="text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors"
@@ -56,7 +49,6 @@ export default function NavMenu() {
             Course Chats
           </Link>
 
-          {/* Find Courses Link */}
           <Link
             href="/search"
             className="text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors"
@@ -64,43 +56,24 @@ export default function NavMenu() {
             Find Courses
           </Link>
 
-          {/* Logout Button (Desktop) */}
-          <Button variant="outline" onClick={handleLogout}>
-            Logout
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar className="h-9 w-9">
+                <AvatarImage src={avatar} />
+                <AvatarFallback>{initials}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>{name}</DropdownMenuLabel>
+              <DropdownMenuItem>
+                <LogOut />
+                <LogoutButton />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+        <MobileMenu avatar={avatar} name={name} initials={initials} />
       </div>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="absolute top-14 left-0 w-full bg-white shadow-lg border-t border-gray-200 p-4 md:hidden z-50">
-          <div className="flex flex-col space-y-3">
-            <Link
-              href="/chats"
-              className="w-full text-center py-3 rounded-md text-gray-900 font-medium hover:bg-gray-100 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Course Chats
-            </Link>
-
-            <Link
-              href="/search"
-              className="w-full text-center py-3 rounded-md text-gray-900 font-medium hover:bg-gray-100 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Find Courses
-            </Link>
-
-            <Button 
-              variant="outline" 
-              onClick={handleLogout} 
-              className="w-full"
-            >
-              Logout
-            </Button>
-          </div>
-        </div>
-      )}
     </nav>
   )
 }

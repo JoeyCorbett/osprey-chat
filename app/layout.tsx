@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   description:
     'Real-time course-based chat app for Stockton University students',
   icons: {
-    icon: '/light-favi.png'
-  }
-  }
+    icon: '/light-favi.png',
+  },
+}
 
 export default function RootLayout({
   children,
