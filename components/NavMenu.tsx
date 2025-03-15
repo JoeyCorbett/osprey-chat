@@ -11,7 +11,7 @@ import LogoutButton from '@/components/LogoutButton'
 import MobileMenu from '@/components/MobileMenu'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { createClient } from '@/utils/supabase/server'
-import { LogOut } from 'lucide-react'
+import { MessageCircle, Search, LogOut } from 'lucide-react'
 
 export default async function NavMenu() {
   const supabase = await createClient()
@@ -26,7 +26,7 @@ export default async function NavMenu() {
     .toUpperCase()
 
   return (
-    <nav className="border-b border-gray-200 bg-white">
+    <nav className="relative border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 md:py-4">
         <Link href="/chats" className="flex items-center space-x-2">
           <Image
@@ -41,23 +41,25 @@ export default async function NavMenu() {
             Osprey Chat
           </span>
         </Link>
-        <div className="hidden md:flex md:items-center md:space-x-6">
+        <div className="hidden md:flex md:items-center md:space-x-5">
           <Link
             href="/chats"
-            className="text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 rounded-md transition"
           >
-            Course Chats
+            <MessageCircle size={20} className="text-gray-600" />
+            Chats
           </Link>
 
           <Link
             href="/search"
-            className="text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 rounded-md transition"
           >
-            Find Courses
+            <Search size={20} className="text-gray-600" />
+            Search
           </Link>
 
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger className="focus:outline-none">
               <Avatar className="h-9 w-9">
                 <AvatarImage src={avatar} />
                 <AvatarFallback>{initials}</AvatarFallback>
