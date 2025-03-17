@@ -15,16 +15,23 @@ interface MessagesListProps {
   messages: Message[]
   user_id: string
   userProfiles: { [key: string]: Profile }
+  onLoadMoreAction: () => void
+  hasMore: boolean
+  isLoadingMore: boolean
 }
 
 export default function MessagesList({
   messages,
   user_id,
   userProfiles,
+  onLoadMoreAction,
+  hasMore,
+  isLoadingMore,
 }: MessagesListProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [showScrollButton, setShowScrollButton] = useState(false)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
+  const lastLoadTime = useRef(Date.now())
 
   const isNearBottom = useCallback(() => {
     if (!scrollContainerRef.current) return true
@@ -45,13 +52,29 @@ export default function MessagesList({
     }
   }, [messages, isFirstLoad, isNearBottom])
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (!scrollContainerRef.current) return
+
+    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current
+    const now = Date.now()
+    
+    const isAtVeryTop = scrollTop <= -scrollHeight + clientHeight + 1
+    
+    if (
+      hasMore &&
+      !isLoadingMore &&
+      isAtVeryTop &&
+      now - lastLoadTime.current > 500
+    ) {
+      lastLoadTime.current = now
+      onLoadMoreAction()
+    }
+
     const isAtBottom = isNearBottom()
     if (showScrollButton === isAtBottom) {
       setShowScrollButton(!isAtBottom)
     }
-  }
+  }, [hasMore, isLoadingMore, onLoadMoreAction, isNearBottom, showScrollButton])
 
   return (
     <div className="h-full flex flex-col relative">
@@ -75,6 +98,14 @@ export default function MessagesList({
           ) : (
             <div className="flex flex-col">
               <div className="max-w-2xl gap-2 mx-auto w-full p-3 sm:p-4">
+                <div className="h-4 -mt-2 mb-2">
+                  {isLoadingMore && (
+                    <div className="flex justify-center py-2 opacity-80">
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-blue-500" />
+                    </div>
+                  )}
+                </div>
+
                 {messages.map((msg, index) => {
                   const prevMessage = messages[index - 1]
                   const isSameSenderAsPrev =
@@ -105,15 +136,12 @@ export default function MessagesList({
                     />
                   )
                 })}
-
-                <div className="h-4" />
               </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Scroll to bottom button */}
       {showScrollButton && messages.length > 0 && !isFirstLoad && (
         <div className="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none z-10">
           <button
