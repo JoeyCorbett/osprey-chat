@@ -3,6 +3,26 @@
 import { Database } from '@/types/database.types'
 import { format } from 'date-fns'
 import Image from 'next/image'
+import { Trash2 } from 'lucide-react'
+import { Pencil } from 'lucide-react'
+import { toast } from 'sonner'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 type Message = Database['public']['Tables']['messages']['Row'] & {
   profiles: Database['public']['Tables']['profiles']['Row'] | null
@@ -27,6 +47,47 @@ export default function MessageItem({
     avatar_url: null,
   }
 
+  const isDeleted = message.content === '[Message deleted]'
+
+  /**const handleEdit = async () => {
+    try {
+      const res = await fetch(`/api/messages/${message.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: message.content,
+        }),
+      })
+
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || 'Failed to update message')
+      }
+
+      const updatedMessage = await res.json()
+      console.log('Message updated', updatedMessage)
+
+      const data = await res.json()
+      console.log('Message updated', data)
+    } catch (err) {
+      console.error('Fetch error', err)
+    }
+  } */
+
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`/api/messages/${message.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!res.ok) throw new Error('Failed to delete message')
+    } catch {
+      toast.error('Failed to delete message', {
+        position: 'top-center',
+      })
+    }
+  }
+
   return (
     <div
       className={`flex items-end ${
@@ -45,38 +106,118 @@ export default function MessageItem({
         />
       )}
 
-      {/* Adjust margin only for grouped messages  */}
-      <div
-        className={`relative px-3 py-2 sm:px-4 sm:py-2 max-w-[80%] sm:max-w-[75%] text-sm rounded-lg border ${
-          isUserMessage
-            ? `bg-blue-600 text-white ${
-                isSameSenderAsPrev && !showTimestamp ? 'mr-10 sm:mr-12' : ''
-              }`
-            : `bg-gray-100 text-gray-900 ${
-                isSameSenderAsPrev && !showTimestamp ? 'ml-10 sm:ml-12' : ''
-              }`
-        } shadow-sm`}
-      >
-        {/* Show username & timestamp only for first message in a group OR if 5+ min passed */}
-        {showTimestamp && (
-          <p
-            className={`text-xs font-semibold ${
-              isUserMessage ? 'text-white' : 'text-gray-700'
-            } mb-1 sm:mb-2`}
-          >
-            {profile.username || 'Unknown User'}{' '}
-            <span
-              className={`text-xs font-normal ${
-                isUserMessage ? 'text-white' : 'text-gray-700'
-              }`}
+      {isUserMessage ? (
+        <ContextMenu>
+          <ContextMenuTrigger asChild>
+            <div
+              className={`relative px-3 py-2 sm:px-4 sm:py-2 max-w-[80%] sm:max-w-[75%] text-sm rounded-lg border
+          bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 ease-in-out
+          ${isSameSenderAsPrev && !showTimestamp ? 'mr-10 sm:mr-12' : ''}
+          shadow-sm`}
             >
-              • {format(new Date(message.created_at), 'h:mm a')}
-            </span>
+              {/* Show username & timestamp only for first message in a group OR if 5+ min passed */}
+              {showTimestamp && (
+                <p
+                  className={`text-xs font-semibold ${
+                    isUserMessage ? 'text-white' : 'text-gray-700'
+                  } mb-1 sm:mb-2`}
+                >
+                  {profile.username || 'Unknown User'}{' '}
+                  <span
+                    className={`text-xs font-normal ${
+                      isUserMessage ? 'text-white' : 'text-gray-700'
+                    }`}
+                  >
+                    • {format(new Date(message.created_at), 'h:mm a')}
+                  </span>
+                </p>
+              )}
+              <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
+                {isDeleted ? (
+                  <span className="text-gray-400 italic">
+                    {message.content}
+                  </span>
+                ) : (
+                  message.content
+                )}
+              </p>
+            </div>
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem
+              onClick={() =>
+                toast.info('Edit feature coming soon', {
+                  position: 'top-center',
+                })
+              }
+            >
+              <Pencil className="w-4 h-4 mr-2" />
+              Edit
+            </ContextMenuItem>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <ContextMenuItem
+                  className="text-red-500"
+                  onSelect={(e) => e.preventDefault()}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete
+                </ContextMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Message</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete this message? This action
+                    cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-red-500 hover:bg-red-600"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </ContextMenuContent>
+        </ContextMenu>
+      ) : (
+        <div
+          className={`relative px-3 py-2 sm:px-4 sm:py-2 max-w-[80%] sm:max-w-[75%] text-sm rounded-lg border
+      bg-gray-100 text-gray-900 ${
+        isSameSenderAsPrev && !showTimestamp ? 'ml-10 sm:ml-12' : ''
+      }
+      shadow-sm`}
+        >
+          {showTimestamp && (
+            <p
+              className={`text-xs font-semibold ${
+                isUserMessage ? 'text-white' : 'text-gray-700'
+              } mb-1 sm:mb-2`}
+            >
+              {profile.username || 'Unknown User'}{' '}
+              <span
+                className={`text-xs font-normal ${
+                  isUserMessage ? 'text-white' : 'text-gray-700'
+                }`}
+              >
+                • {format(new Date(message.created_at), 'h:mm a')}
+              </span>
+            </p>
+          )}
+          <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
+            {isDeleted ? (
+              <span className="text-gray-400 italic">{message.content}</span>
+            ) : (
+              message.content
+            )}
           </p>
-        )}
-
-        <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">{message.content}</p>
-      </div>
+        </div>
+      )}
 
       {/* Show avatar only for the first sent message in a group OR if a 5-minute gap exists */}
       {showTimestamp && isUserMessage && (

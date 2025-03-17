@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import MessagesList from './MessagesList'
 import { Database } from '@/types/database.types'
@@ -17,64 +17,67 @@ interface ChatRoomClientProps {
 
 const supabase = createClient()
 
-export default function ChatRoomClient({ roomId, user_id }: ChatRoomClientProps) {
+export default function ChatRoomClient({
+  roomId,
+  user_id,
+}: ChatRoomClientProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const userProfilesRef = useRef<{ [key: string]: Profile }>({})
   const [isLoading, setIsLoading] = useState(true)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
-  const [cursor, setCursor] = useState<string | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
-  const isFetching = useRef(false)
-
-  const fetchMessages = useCallback(async (currentCursor?: string | null) => {
-    if (isFetching.current) return
-
-    try {
-      isFetching.current = true
-      const isInitialFetch = !currentCursor
-
-      if (isInitialFetch) setIsLoading(true)
-      else setIsLoadingMore(true)
-
-      const url = `/api/messages?roomId=${roomId}${currentCursor ? `&cursor=${currentCursor}` : ''}`
-      const res = await fetch(url)
-      if (!res.ok) throw new Error('Failed to fetch messages')
-
-      const { messages: fetchedMessages, hasMore: moreMessages, nextCursor } = await res.json()
-
-      fetchedMessages.forEach((msg: Message) => {
-        if (msg.profiles && !userProfilesRef.current[msg.user_id]) {
-          userProfilesRef.current[msg.user_id] = msg.profiles
-        }
-      })
-
-      setMessages(prev => (isInitialFetch ? fetchedMessages : [...fetchedMessages, ...prev]))
-      setHasMore(moreMessages)
-      setCursor(prevCursor => (nextCursor !== prevCursor ? nextCursor : prevCursor))
-    } catch (err) {
-      console.error('Error fetching messages:', err)
-      setError(err as Error)
-    } finally {
-      isFetching.current = false
-      setIsLoading(false)
-      setIsLoadingMore(false)
-    }
-  }, [roomId])
-
   useEffect(() => {
+    // Fetch initial messages from API
+    const fetchMessages = async () => {
+      try {
+        setIsLoading(true)
+        const res = await fetch(`/api/messages?roomId=${roomId}`)
+        if (!res.ok) throw new Error('Failed to fetch messages')
+
+        const fetchedMessages = await res.json()
+
+        // Cache profiles
+        fetchedMessages.forEach((msg: Message) => {
+          if (msg.profiles && !userProfilesRef.current[msg.user_id]) {
+            userProfilesRef.current[msg.user_id] = msg.profiles
+          }
+        })
+
+        // Set messages immediately
+        setMessages(fetchedMessages)
+
+        // Use a small timeout to ensure DOM is ready
+        setTimeout(() => {
+          setIsLoading(false)
+          console.log('Loading complete, messages:', fetchedMessages.length)
+        }, 100)
+      } catch (err) {
+        console.error('Error fetching messages:', err)
+        setError(err as Error)
+        setIsLoading(false)
+      }
+    }
+
     fetchMessages()
 
+    // Real-time subscription for new messages
     const subscription = supabase
       .channel(`room-${roomId}`)
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages', filter: `room_id=eq.${roomId}` },
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `room_id=eq.${roomId}`,
+        },
         async (payload) => {
           const newMessage = payload.new as Message
+
+          // Check if profile is already cached
           let profile = userProfilesRef.current[newMessage.user_id]
 
+          // if profile is missing, fetch it from the database
           if (!profile) {
             const { data: profileData } = await supabase
               .from('profiles')
@@ -82,26 +85,59 @@ export default function ChatRoomClient({ roomId, user_id }: ChatRoomClientProps)
               .eq('id', newMessage.user_id)
               .single()
 
-            profile = profileData || { id: newMessage.user_id, username: 'Unknown User', avatar_url: null }
+            profile = profileData || {
+              id: newMessage.user_id,
+              username: 'Unknown User',
+              avatar_url: null,
+            }
+
+            // Update profile cache to prevent repeated fetches
             userProfilesRef.current[newMessage.user_id] = profile
           }
 
-          setMessages((prev) => [...prev, { ...newMessage, profiles: profile }])
-        }
+          // Merge profile data into the new message
+          const messageWithProfile: Message = {
+            ...newMessage,
+            profiles: profile,
+          }
+
+          setMessages((prev) => [...prev, messageWithProfile])
+        },
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'messages',
+          filter: `room_id=eq.${roomId}`,
+        },
+        (payload) => {
+          setMessages((prev) =>
+            prev.map((message) =>
+              message.id === payload.old.id
+                ? { ...message, content: '[Message deleted]' }
+                : message
+            )
+          )
+        },
       )
       .subscribe()
 
     return () => {
       supabase.removeChannel(subscription)
     }
-  }, [fetchMessages, roomId])
+  }, [roomId])
 
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-full w-full text-center p-4">
-        <p className="text-red-600 font-semibold text-lg">Something went wrong.</p>
+        <p className="text-red-600 font-semibold text-lg">
+          Something went wrong.
+        </p>
         <p className="text-gray-600 text-sm mb-4">
-          We couldn&apos;t load messages. Please check your connection and try again.
+          We couldn&apos;t load messages. Please check your connection and try
+          again.
         </p>
         <button
           onClick={() => window.location.reload()}
@@ -127,9 +163,6 @@ export default function ChatRoomClient({ roomId, user_id }: ChatRoomClientProps)
         messages={messages}
         user_id={user_id}
         userProfiles={userProfilesRef.current}
-        onLoadMoreAction={() => hasMore && !isLoadingMore && fetchMessages(cursor)}
-        hasMore={hasMore}
-        isLoadingMore={isLoadingMore}
       />
     </div>
   )
