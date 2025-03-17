@@ -20,7 +20,7 @@ export default function JoinCourseButton({
 
   const handleJoin = async (courseCode: string, section: string) => {
     if (error || section.length < 3) {
-      toast.error('Section number must be between 001 and 050', {
+      toast.error('Section number must be between 001 and 500', {
         position: 'top-center',
       })
       return

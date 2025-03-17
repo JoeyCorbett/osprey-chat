@@ -28,8 +28,10 @@ export async function GET(req: NextRequest) {
     .select('id, content, created_at, user_id, profiles(username, avatar_url)')
     .eq('room_id', roomId)
     .limit(100)
-    .order('created_at', { ascending: true })
+    .order('created_at', { ascending: false })
 
+  const reverseMessages = messages ? [...messages].reverse() : []
+  
   if (error) {
     console.error('Error fetching messages', error)
     return NextResponse.json(
@@ -38,7 +40,7 @@ export async function GET(req: NextRequest) {
     )
   }
 
-  return NextResponse.json(messages, { status: 200 })
+  return NextResponse.json(reverseMessages, { status: 200 })
 }
 
 export async function POST(req: Request) {

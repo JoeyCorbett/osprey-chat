@@ -40,11 +40,11 @@ export default function CourseCard({
       return
     }
 
-    const regex = /^0(0[1-9]|[1-4][0-9]|50)$/
+    const regex = /^(00[1-9]|0[1-9][0-9]|[1-4][0-9]{2}|500)$/
     const numericValue = Number(value)
 
-    if (!regex.test(value) || numericValue < 1 || numericValue > 50) {
-      setError('Section number must be between 001 and 050')
+    if (!regex.test(value) || numericValue < 1 || numericValue > 500) {
+      setError('Section number must be between 001 and 500')
     } else {
       setError('')
     }

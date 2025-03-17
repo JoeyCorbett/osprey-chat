@@ -28,21 +28,18 @@ export default function MessagesList({
 
   const isNearBottom = useCallback(() => {
     if (!scrollContainerRef.current) return true
-    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current
-    const threshold = window.innerWidth < 768 ? 200 : 150 // Slightly increased threshold on mobile
-    return scrollHeight - scrollTop - clientHeight < threshold
+    const { scrollTop } = scrollContainerRef.current
+    return Math.abs(scrollTop) < 10
   }, [])
 
   useEffect(() => {
     if (!scrollContainerRef.current || messages.length === 0) return
 
     if (isFirstLoad) {
-      scrollContainerRef.current.scrollTop =
-        scrollContainerRef.current.scrollHeight
       setIsFirstLoad(false)
     } else if (isNearBottom()) {
       scrollContainerRef.current.scrollTo({
-        top: scrollContainerRef.current.scrollHeight,
+        top: 0,
         behavior: 'smooth',
       })
     }
@@ -50,7 +47,10 @@ export default function MessagesList({
 
   const handleScroll = () => {
     if (!scrollContainerRef.current) return
-    setShowScrollButton(!isNearBottom())
+    const isAtBottom = isNearBottom()
+    if (showScrollButton === isAtBottom) {
+      setShowScrollButton(!isAtBottom)
+    }
   }
 
   return (
@@ -58,13 +58,13 @@ export default function MessagesList({
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto scroll-smooth overscroll-contain"
+        className="flex-1 overflow-y-auto scroll-smooth overscroll-contain flex flex-col-reverse"
         style={{ scrollbarWidth: 'thin' }}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col">
           {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="flex flex-col items-center text-center text-gray-500 px-4">
+            <div className="flex items-center justify-center min-h-[calc(100dvh-200px)]">
+              <div className="flex flex-col items-center justify-center text-center text-gray-500 px-4 -mt-20">
                 <MessageCircle className="w-12 h-12 sm:w-14 sm:h-14 text-gray-400 mb-3" />
                 <p className="text-lg font-semibold">No messages yet</p>
                 <p className="text-sm text-gray-400 max-w-xs">
@@ -73,7 +73,7 @@ export default function MessagesList({
               </div>
             </div>
           ) : (
-            <div className="flex flex-col mt-auto">
+            <div className="flex flex-col">
               <div className="max-w-2xl gap-2 mx-auto w-full p-3 sm:p-4">
                 {messages.map((msg, index) => {
                   const prevMessage = messages[index - 1]
@@ -113,13 +113,13 @@ export default function MessagesList({
         </div>
       </div>
 
-      {/* Scroll to bottom button - optimized for mobile */}
+      {/* Scroll to bottom button */}
       {showScrollButton && messages.length > 0 && !isFirstLoad && (
         <div className="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none z-10">
           <button
             onClick={() =>
               scrollContainerRef.current?.scrollTo({
-                top: scrollContainerRef.current.scrollHeight,
+                top: 0,
                 behavior: 'smooth',
               })
             }

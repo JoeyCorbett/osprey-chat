@@ -2,6 +2,7 @@
 
 import CourseActions from '@/components/CourseActions'
 import Link from 'next/link'
+import { Card, CardContent } from '@/components/ui/card'
 
 interface Course {
   id: string
@@ -40,21 +41,20 @@ export default function CourseList({ initialCourses }: CourseListProps) {
         const courseInfo = courseRoom.courses
 
         return (
-          <div
-            key={course.room_id}
-            className="relative flex items-center justify-between p-4 border rounded-xl shadow-sm hover:shadow-md transition-shadow bg-white"
-          >
-            <Link href={`/room/${course.room_id}`} className="flex-1">
-              <div className="flex flex-col">
-                <h2 className="font-semibold text-gray-900 text-lg">
-                  {courseInfo.code} - {courseRoom.section}
-                </h2>
-                <p className="text-sm text-gray-600">{courseInfo.title}</p>
-              </div>
-            </Link>
+          <Card key={course.room_id} className="border rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white">
+            <CardContent className="flex items-center justify-between p-4">
+              <Link href={`/room/${course.room_id}`} className="flex-1">
+                <div className="flex flex-col">
+                  <h2 className="font-semibold text-gray-900 text-lg">
+                    {courseInfo.code} - {courseRoom.section}
+                  </h2>
+                  <p className="text-sm text-gray-600">{courseInfo.title}</p>
+                </div>
+              </Link>
 
-            <CourseActions roomId={course.room_id} />
-          </div>
+              <CourseActions roomId={course.room_id} />
+            </CardContent>
+          </Card>
         )
       })}
     </div>

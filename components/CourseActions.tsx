@@ -3,6 +3,7 @@ import { mutate } from 'swr'
 import { toast } from 'sonner'
 import { EllipsisVertical } from 'lucide-react'
 import { Database } from '@/types/database.types'
+import { LogOut } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -70,16 +71,17 @@ export default function CourseActions({ roomId }: CourseActionsProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 hover:bg-gray-100 rounded-full"
+            className="hover:bg-gray-100 transition rounded-full"
           >
-            <EllipsisVertical className="h-4 w-4" />
+            <EllipsisVertical className="h-5 w-5 text-gray-600" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
+        <DropdownMenuContent align="end" className="w-40">
           <DropdownMenuItem
             onClick={() => setIsOpen(true)}
-            className="px-3 py-2"
+            className="flex items-center gap-2 px-4 py-2 hover:bg-red-50 transition rounded-md"
           >
+            <LogOut size={16} />
             Leave Course
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -99,7 +101,7 @@ export default function CourseActions({ roomId }: CourseActionsProps) {
             <AlertDialogCancel onClick={() => setIsOpen(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleLeave}>
+            <AlertDialogAction onClick={handleLeave} >
               Leave Course
             </AlertDialogAction>
           </AlertDialogFooter>
