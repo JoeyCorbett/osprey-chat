@@ -18,6 +18,7 @@ export default function CourseSearch() {
   const debouncedQuery = useDebounce(query, 300)
   const [section, setSection] = useState('')
   const containerRef = useRef<HTMLDivElement>(null)
+  
 
   const { data, error, isLoading } = useSWR(
     debouncedQuery.length > 1 ? `/api/courses?q=${debouncedQuery}` : null,
@@ -43,6 +44,7 @@ export default function CourseSearch() {
           size={22}
         />
         <Input
+          autoFocus
           type="text"
           value={query}
           onChange={handleChange}
