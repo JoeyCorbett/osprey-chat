@@ -47,26 +47,23 @@ export type Database = {
       }
       course_rooms: {
         Row: {
-          course_id: string
           id: string
-          section: string
+          section_id: string
         }
         Insert: {
-          course_id?: string
           id?: string
-          section: string
+          section_id?: string
         }
         Update: {
-          course_id?: string
           id?: string
-          section?: string
+          section_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "course_rooms_course_id_fkey"
-            columns: ["course_id"]
+            foreignKeyName: "course_rooms_section_id_fkey"
+            columns: ["section_id"]
             isOneToOne: false
-            referencedRelation: "courses"
+            referencedRelation: "sections"
             referencedColumns: ["id"]
           },
         ]
@@ -145,6 +142,35 @@ export type Database = {
           username?: string
         }
         Relationships: []
+      }
+      sections: {
+        Row: {
+          course_id: string
+          id: string
+          instructor: string | null
+          section: string
+        }
+        Insert: {
+          course_id: string
+          id?: string
+          instructor?: string | null
+          section: string
+        }
+        Update: {
+          course_id?: string
+          id?: string
+          instructor?: string | null
+          section?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sections_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

@@ -14,13 +14,19 @@ interface Course {
   title: string
 }
 
-interface Room {
+interface Section {
   id: string
   course_id: string
   section: string
+  instructor: string
   courses: Course
 }
 
+interface Room {
+  id: string
+  section_id: string
+  sections: Section
+}
 export default async function RoomPage({
   params,
 }: {
@@ -38,7 +44,9 @@ export default async function RoomPage({
 
   const { data: room, error } = (await supabase
     .from('course_rooms')
-    .select('course_id, section, courses (id, code, title)')
+    .select(
+      'id, section_id, sections (id, course_id, section, instructor, courses (id, code, title))',
+    )
     .eq('id', room_id)
     .single()) as { data: Room | null; error: PostgrestError | null }
 
@@ -48,8 +56,8 @@ export default async function RoomPage({
     redirect('/chats')
   }
 
-  const baseFormat = `${room.courses.code} - ${room.section}`
-  const desktopFormat = `${baseFormat} | ${room.courses.title}`
+  const baseFormat = `${room.sections.courses.code} - ${room.sections.section}`
+  const desktopFormat = `${baseFormat} | ${room.sections.courses.title}`
   const mobileFormat = baseFormat
 
   return (

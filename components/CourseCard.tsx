@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { ChevronRight } from 'lucide-react'
 import { Database } from '@/types/database.types'
 import JoinCourseButton from '@/components/JoinCourseButton'
-import { AlertCircle } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -13,54 +11,46 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog'
 
+type Section = Database['public']['Tables']['sections']['Row']
 type Course = Database['public']['Tables']['courses']['Row']
-
-interface CourseCardProps {
-  course: Course
-  section: string
-  setSection: (value: string) => void
-}
 
 export default function CourseCard({
   course,
-  section,
-  setSection,
-}: CourseCardProps) {
-  const [error, setError] = useState('')
+}: {
+  course: Course
+}) {
+  const [courseInfo, setCourseInfo] = useState<Section[]>([])
+  const [selectedSection, setSelectedSection] = useState<Section>()
+  const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const handleOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen)
-    if (!isOpen) setSection('')
-  }
+  const fetchSections = async () => {
+    if (courseInfo.length > 0) return
 
-  const validateSection = (value: string) => {
-    if (value.length < 3) {
-      setError('')
-      return
-    }
-
-    const regex = /^(00[1-9]|0[1-9][0-9]|[1-4][0-9]{2}|500)$/
-    const numericValue = Number(value)
-
-    if (!regex.test(value) || numericValue < 1 || numericValue > 500) {
-      setError('Section number must be between 001 and 500')
-    } else {
-      setError('')
+    setLoading(true)
+    try {
+      const response = await fetch(`/api/sections?courseId=${course.id}`)
+      const data = await response.json()
+      setCourseInfo(data)
+    } catch (error) {
+      console.error('Error fetching sections:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-
-    if (/^\d{0,3}$/.test(value)) {
-      setSection(value)
-      validateSection(value)
-    }
+  function formatSection(section: string) {
+    return section.toString().padStart(3, '0')
   }
-
+  
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen)
+        if (isOpen) fetchSections()
+      }}
+    >
       <DialogTrigger asChild>
         <div>
           <Card className="hover:shadow-md cursor-pointer">
@@ -74,33 +64,58 @@ export default function CourseCard({
           </Card>
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:top-1/2 top-[35%] transform -translate-y-1/2">
-        <DialogTitle>Enter Your Section</DialogTitle>
+      <DialogContent>
+        <DialogTitle>Select Your Section</DialogTitle>
         <DialogDescription>
-          Enter the section number for this course to join the chat.
+          Select the section for this course below.
         </DialogDescription>
-        <p className="text-gray-600">
-          {course.code} - {course.title}
-        </p>
-        <Input
-          type="text"
-          placeholder="Enter section (e.g., 002)"
-          value={section}
-          onChange={handleChange}
-          maxLength={3}
-          inputMode="numeric"
-        />
-        {error && (
-          <div className="flex justify-center align-center gap-3">
-            <AlertCircle className="text-red-400" size={20} />
-            <p className="text-red-400 text-center text-sm">{error}</p>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            {loading ? (
+              <div className="flex justify-center py-2">
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-blue-500" />
+              </div>
+            ) : courseInfo.length > 0 ? (
+              courseInfo.map((info) => (
+                <button
+                  key={info.id}
+                  onClick={() => setSelectedSection(info)}
+                  className={`w-full px-4 py-3 text-left rounded-lg border ${
+                    selectedSection?.section === info.section
+                      ? 'bg-black text-white border-gray-800 shadow-sm hover:bg-gray-900'
+                      : 'bg-white hover:bg-gray-50 border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium">{course.code}</span>
+                      <span className="text-gray-400">•</span>
+                      <span className="font-medium">
+                        {formatSection(info.section)}
+                      </span>
+                    </div>
+                    <span
+                      className={`text-sm ${
+                        selectedSection?.section === info.section
+                          ? 'text-blue-100'
+                          : 'text-gray-600'
+                      }`}
+                    >
+                      {info.instructor}
+                    </span>
+                  </div>
+                </button>
+              ))
+            ) : (
+              <p className="text-gray-500 text-sm">No sections available</p>
+            )}
           </div>
-        )}
-        <JoinCourseButton
-          courseCode={course.code}
-          section={section}
-          error={error}
-        />
+          <JoinCourseButton
+            courseId={course.id}
+            sectionId={selectedSection?.id || ''}
+            disabled={loading || !courseInfo.length}
+          />
+        </div>
       </DialogContent>
     </Dialog>
   )

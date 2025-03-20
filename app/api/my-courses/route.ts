@@ -14,7 +14,15 @@ export async function GET() {
     .select(
       `
       room_id,
-      course_rooms (id, section, courses (id, code, title))
+      course_rooms (
+        id, section_id,
+        sections (
+          id, course_id, section, instructor,
+          courses (
+            id, code, title
+          )
+        )
+      )
     `,
     )
     .eq('user_id', user.user.id)

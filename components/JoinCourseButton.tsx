@@ -4,35 +4,28 @@ import { Button } from './ui/button'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
-interface JoinChatButtonProps {
-  courseCode: string
-  section: string
-  error: string
+interface JoinCourseButtonProps {
+  courseId: string
+  sectionId: string | undefined
+  disabled: boolean
 }
 
 export default function JoinCourseButton({
-  courseCode,
-  section,
-  error,
-}: JoinChatButtonProps) {
+  courseId,
+  sectionId,
+  disabled,
+}: JoinCourseButtonProps) {
   const router = useRouter()
   const [isJoining, setIsJoining] = useState(false)
 
-  const handleJoin = async (courseCode: string, section: string) => {
-    if (error || section.length < 3) {
-      toast.error('Section number must be between 001 and 500', {
-        position: 'top-center',
-      })
-      return
-    }
-
+  const handleJoin = async () => {
     if (isJoining) return
     setIsJoining(true)
 
     const res = await fetch('/api/chats', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ course_id: courseCode, section: section }),
+      body: JSON.stringify({ courseId, sectionId }),
     })
 
     const data = await res.json()
@@ -57,8 +50,9 @@ export default function JoinCourseButton({
 
   return (
     <Button
-      disabled={isJoining}
-      onClick={() => handleJoin(courseCode, section)}
+      disabled={isJoining || disabled}
+      onClick={handleJoin}
+      className="w-full"
     >
       {isJoining ? 'Joining...' : 'Join Chat'}
     </Button>

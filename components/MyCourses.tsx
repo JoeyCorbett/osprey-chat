@@ -29,7 +29,7 @@ export default function MyCourses() {
           {[...Array(5)].map((_, i) => (
             <Skeleton
               key={i}
-              className="h-20 w-full rounded-xl animate-pulse"
+              className="h-32 w-full rounded-lg animate-pulse"
             />
           ))}
         </div>

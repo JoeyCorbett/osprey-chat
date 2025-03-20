@@ -16,7 +16,6 @@ type Course = Database['public']['Tables']['courses']['Row']
 export default function CourseSearch() {
   const [query, setQuery] = useState('')
   const debouncedQuery = useDebounce(query, 300)
-  const [section, setSection] = useState('')
   const containerRef = useRef<HTMLDivElement>(null)
   
 
@@ -72,8 +71,6 @@ export default function CourseSearch() {
               <CourseCard
                 key={course.id}
                 course={course}
-                section={section}
-                setSection={setSection}
               />
             ))}
         </div>

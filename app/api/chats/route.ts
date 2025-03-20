@@ -1,46 +1,28 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
-import { Database } from '@/types/database.types'
 import { insertUserIntoRoom } from '@/utils/db'
-
-type CourseRoomInsert = Database['public']['Tables']['course_rooms']['Insert']
 
 export async function POST(req: Request) {
   const supabase = await createClient()
 
   try {
-    const { course_id, section } = await req.json()
+    const { courseId, sectionId } = await req.json() as { courseId: string, sectionId: string }
 
-    if (!course_id || !section) {
-      return NextResponse.json(
-        { error: 'Missing course_id or section' },
-        { status: 400 },
-      )
-    }
-
-    // Check ceiling for section num
-    const sectionNumber = parseInt(section, 10)
-    if (isNaN(sectionNumber) || sectionNumber < 1 || sectionNumber > 500) {
-      return NextResponse.json(
-        { error: 'Section must be between 000 and 500' },
-        { status: 400 },
-      )
+    if (!courseId || !sectionId) {
+      return NextResponse.json({ error: 'Missing section id' }, { status: 400 })
     }
 
     // Get authenticated user
     const { data: userData, error: userError } = await supabase.auth.getUser()
     if (userError || !userData.user) {
-      return NextResponse.json(
-        { error: 'User must be logged in' },
-        { status: 401 },
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     const userId = userData.user.id
 
     // Check if user already joined more than 5 rooms
     const { count, error: countError } = await supabase
       .from('course_members')
-      .select('*', { count: 'exact', head: true })
+      .select('user_id', { count: 'exact', head: true })
       .eq('user_id', userId)
 
     if (countError || count === null) {
@@ -53,36 +35,47 @@ export async function POST(req: Request) {
 
     if (count >= 5) {
       return NextResponse.json(
-        { error: 'User is already in 5 rooms' },
+        { error: 'You are already in 5 rooms' },
         { status: 403 },
       )
     }
 
-    // Get course ID
+    // Check if the course exists
     const { data: courseData, error: courseError } = await supabase
       .from('courses')
       .select('id')
-      .eq('code', course_id)
+      .eq('id', courseId)
       .single()
 
-    if (courseError) {
+    if (!courseData || courseError) {
       console.error('Supabase Error (fetching course)')
+      return NextResponse.json({ error: 'Course not found' }, { status: 404 })
+    } 
+
+    // Verify Section Exists
+    const { data: sectionData, error: sectionError } = await supabase
+      .from('sections')
+      .select('id')
+      .eq('id', sectionId)
+      .single()
+
+    if (sectionError) {
+      console.error('Supabase Error (fetching section)')
       return NextResponse.json(
-        { error: 'Database error when fetching course' },
+        { error: 'Database error when fetching section' },
         { status: 500 },
       )
     }
 
-    if (!courseData) {
-      return NextResponse.json({ error: 'course not found' }, { status: 404 })
+    if (!sectionData) {
+      return NextResponse.json({ error: 'section not found' }, { status: 404 })
     }
 
     // Check if room exists
     const { data: roomData, error: roomError } = await supabase
       .from('course_rooms')
       .select('id')
-      .eq('course_id', courseData.id)
-      .eq('section', section)
+      .eq('section_id', sectionId)
       .maybeSingle()
 
     if (roomError) {
@@ -99,7 +92,7 @@ export async function POST(req: Request) {
       const { data: existingMember, error: existingMemberError } =
         await supabase
           .from('course_members')
-          .select('*')
+          .select('id')
           .eq('user_id', userId)
           .eq('room_id', roomData.id)
           .maybeSingle()
@@ -110,7 +103,7 @@ export async function POST(req: Request) {
           existingMemberError.message,
         )
         return NextResponse.json({
-          error: 'Database error when checking membership',
+          error: 'Error when checking membership',
         })
       }
 
@@ -137,14 +130,9 @@ export async function POST(req: Request) {
       // Room doesn't exist, create room, then add
     }
     // Create new room
-    const newRoom: CourseRoomInsert = {
-      course_id: courseData.id,
-      section: section,
-    }
-
     const { data: newRoomData, error: newRoomError } = await supabase
       .from('course_rooms')
-      .insert([newRoom])
+      .insert({ section_id: sectionId })
       .select('id')
       .single()
 

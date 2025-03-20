@@ -60,7 +60,7 @@ export default async function NavMenu() {
 
           <DropdownMenu>
             <DropdownMenuTrigger className="focus:outline-none">
-              <Avatar className="h-9 w-9">
+              <Avatar className="h-9 w-9 select-none">
                 <AvatarImage src={avatar} />
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
