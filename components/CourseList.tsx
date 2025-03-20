@@ -48,7 +48,7 @@ export default function CourseList({ initialCourses }: CourseListProps) {
         return (
           <Card
             key={course.room_id}
-            className="border rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white"
+            className="border rounded-lg shadow-sm bg-white"
           >
             <CardContent className="p-4">
               <div className="flex justify-between items-start mb-3">
@@ -63,10 +63,6 @@ export default function CourseList({ initialCourses }: CourseListProps) {
                 <CourseActions roomId={course.room_id} />
               </div>
 
-              <Link 
-                href={`/room/${course.room_id}`}
-                className="block"
-              >
                 <div className="space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <h2 className="font-semibold text-gray-900 text-lg line-clamp-2">
@@ -84,8 +80,19 @@ export default function CourseList({ initialCourses }: CourseListProps) {
                       </span>
                     </div>
                   </div>
+                  
+                  <div className="mt-3 sm:mt-4">
+                    <Link 
+                      href={`/room/${course.room_id}`}
+                      className="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                      </svg>
+                      Join Chat
+                    </Link>
                 </div>
-              </Link>
+              </div>
             </CardContent>
           </Card>
         )

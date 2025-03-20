@@ -56,10 +56,6 @@ export default async function RoomPage({
     redirect('/chats')
   }
 
-  const baseFormat = `${room.sections.courses.code} - ${room.sections.section}`
-  const desktopFormat = `${baseFormat} | ${room.sections.courses.title}`
-  const mobileFormat = baseFormat
-
   return (
     <div className="flex flex-col h-dvh">
       <header className="p-3 sm:p-4 flex items-center justify-between border-b bg-white sticky top-0 z-10 shadow-sm">
@@ -71,10 +67,17 @@ export default async function RoomPage({
           <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
         </Link>
 
-        <h1 className="text-base sm:text-lg font-semibold truncate max-w-[60%]">
-          <span className="hidden md:inline">{desktopFormat}</span>
-          <span className="md:hidden">{mobileFormat}</span>
-        </h1>
+        <div className="flex flex-col items-center max-w-[60%] overflow-hidden">
+          <h1 className="text-base sm:text-lg font-semibold truncate w-full text-center">
+            {room.sections.courses.code} -{' '}
+            {room.sections.section.toString().padStart(3, '0')}
+          </h1>
+          <div className="text-xs text-gray-500 truncate w-full text-center hidden md:block">
+            <span className="font-medium">{room.sections.courses.title}</span>
+            <span className="mx-1">•</span>
+            <span>{room.sections.instructor}</span>
+          </div>
+        </div>
 
         <RoomUsersPopover roomId={room_id} />
       </header>
