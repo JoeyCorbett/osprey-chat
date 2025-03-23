@@ -92,7 +92,7 @@ export default function MessageItem({
 
   return (
     <div
-      className={`flex items-end ${
+      className={`flex items-end message ${
         isUserMessage ? 'justify-end' : 'justify-start'
       } ${showTimestamp ? 'mt-4' : 'mt-1'}`}
     >
