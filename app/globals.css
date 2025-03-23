@@ -96,3 +96,14 @@ body {
     transform: translateY(0);
   }
 }
+
+@media (pointer: coarse) {
+  .message {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    touch-action: none;
+    -webkit-touch-callout: none; 
+  }
+}

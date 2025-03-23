@@ -6,7 +6,10 @@ export async function POST(req: Request) {
   const supabase = await createClient()
 
   try {
-    const { courseId, sectionId } = await req.json() as { courseId: string, sectionId: string }
+    const { courseId, sectionId } = (await req.json()) as {
+      courseId: string
+      sectionId: string
+    }
 
     if (!courseId || !sectionId) {
       return NextResponse.json({ error: 'Missing section id' }, { status: 400 })
@@ -40,35 +43,24 @@ export async function POST(req: Request) {
       )
     }
 
-    // Check if the course exists
-    const { data: courseData, error: courseError } = await supabase
-      .from('courses')
-      .select('id')
-      .eq('id', courseId)
-      .single()
-
-    if (!courseData || courseError) {
-      console.error('Supabase Error (fetching course)')
-      return NextResponse.json({ error: 'Course not found' }, { status: 404 })
-    } 
-
-    // Verify Section Exists
+    // Verify section belongs to course
     const { data: sectionData, error: sectionError } = await supabase
       .from('sections')
       .select('id')
       .eq('id', sectionId)
+      .eq('course_id', courseId)
       .single()
 
     if (sectionError) {
-      console.error('Supabase Error (fetching section)')
+      console.error('Supabase error (Checking section):', sectionError.message)
       return NextResponse.json(
-        { error: 'Database error when fetching section' },
+        { error: 'Database error when checking section' },
         { status: 500 },
       )
     }
 
     if (!sectionData) {
-      return NextResponse.json({ error: 'section not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Section not found' }, { status: 404 })
     }
 
     // Check if room exists
