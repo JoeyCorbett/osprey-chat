@@ -114,11 +114,7 @@ export default function ChatRoomClient({
         },
         (payload) => {
           setMessages((prev) =>
-            prev.map((message) =>
-              message.id === payload.old.id
-                ? { ...message, content: '[Message deleted]' }
-                : message
-            )
+            prev.filter((message) => message.id !== payload.old.id),
           )
         },
       )

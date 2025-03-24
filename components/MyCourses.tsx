@@ -6,7 +6,7 @@ import { Skeleton } from './ui/skeleton'
 import { Button } from './ui/button'
 import { useRouter } from 'next/navigation'
 import CourseList from '@/components/CourseList'
-import { FeedbackDialog } from '@/components/FeedbackDialog'
+
 const fetcher = async () => {
   const res = await fetch('/api/my-courses')
   if (!res.ok) throw new Error('Failed to load courses')
@@ -63,7 +63,6 @@ export default function MyCourses() {
       ) : (
         <CourseList initialCourses={courseRooms} />
       )}
-      <FeedbackDialog />
     </div>
   )
 }

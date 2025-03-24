@@ -1,4 +1,5 @@
 import MyCourses from '@/components/MyCourses'
+import { FeedbackDialog } from '@/components/FeedbackDialog'
 
 export default async function Chats() {
   return (
@@ -7,6 +8,7 @@ export default async function Chats() {
         <div className="w-full">
           <MyCourses />
         </div>
+        <FeedbackDialog />
       </div>
     </>
   )

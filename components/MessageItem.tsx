@@ -49,8 +49,6 @@ export default function MessageItem({
     avatar_url: null,
   }
 
-  const isDeleted = message.content === '[Message deleted]'
-
   /**const handleEdit = async () => {
     try {
       const res = await fetch(`/api/messages/${message.id}`, {
@@ -92,7 +90,7 @@ export default function MessageItem({
 
   return (
     <div
-      className={`flex items-end message ${
+      className={`flex items-end ${
         isUserMessage ? 'justify-end' : 'justify-start'
       } ${showTimestamp ? 'mt-4' : 'mt-1'}`}
     >
@@ -136,13 +134,7 @@ export default function MessageItem({
                   </p>
                 )}
                 <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
-                  {isDeleted ? (
-                    <span className="text-gray-400 italic">
-                      {message.content}
-                    </span>
-                  ) : (
-                    message.content
-                  )}
+                  {message.content}
                 </p>
               </div>
             </ContextMenuTrigger>
@@ -213,11 +205,7 @@ export default function MessageItem({
             </p>
           )}
           <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
-            {isDeleted ? (
-              <span className="text-gray-400 italic">{message.content}</span>
-            ) : (
-              message.content
-            )}
+            {message.content}
           </p>
         </div>
       )}
