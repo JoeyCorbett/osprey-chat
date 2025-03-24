@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { MessagesSquare, Users, Zap, Send } from 'lucide-react'
+import { MessagesSquare, Users, Zap, Search } from 'lucide-react'
 import Link from 'next/link'
 
 export default function LandingPage() {
@@ -40,12 +40,6 @@ export default function LandingPage() {
                 className="text-sm font-medium hover:underline underline-offset-4"
                 href="#"
               >
-                FAQ
-              </a>
-              <a
-                className="text-sm font-medium hover:underline underline-offset-4"
-                href="#"
-              >
                 About
               </a>
               <a
@@ -56,13 +50,11 @@ export default function LandingPage() {
               </a>
             </nav>
 
-            {/* Mobile Menu Button (visible on small screens) */}
             <button
               className="ml-auto md:hidden p-2"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle Menu"
             >
-              {/* Simple “Hamburger” icon; you can replace with an SVG icon if you like */}
               <div className="w-6 h-0.5 bg-black dark:bg-white mb-1"></div>
               <div className="w-6 h-0.5 bg-black dark:bg-white mb-1"></div>
               <div className="w-6 h-0.5 bg-black dark:bg-white"></div>
@@ -70,7 +62,6 @@ export default function LandingPage() {
           </header>
         </div>
 
-        {/* Mobile Menu (visible when toggled) */}
         {menuOpen && (
           <nav className="md:hidden bg-white dark:bg-gray-900 px-4 py-2 border-t">
             <a
@@ -101,11 +92,8 @@ export default function LandingPage() {
         )}
       </div>
 
-      {/* Main Content */}
       <main className="flex-1">
-        {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
-          {/* container is limited by px-4 on mobile and px-12 on md+ */}
           <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
@@ -113,9 +101,9 @@ export default function LandingPage() {
                   Connect with classmates instantly
                 </h1>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  No more scrambling to get your classmates into a GroupMe or Discord. 
-                  Osprey Chat gives you instant access to chat rooms for your Stockton 
-                  courses—no links, no invites, no hassle.
+                  No more scrambling to get your classmates into a GroupMe or
+                  Discord. Osprey Chat gives you instant access to chat rooms
+                  for your Stockton courses—no links, no invites, no hassle.
                 </p>
               </div>
               <div className="w-full max-w-sm space-y-2">
@@ -129,7 +117,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Feature Cards Section */}
         <div className="bg-gray-100 dark:bg-gray-800 w-full">
           <section className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6 mx-auto">
@@ -139,7 +126,8 @@ export default function LandingPage() {
                     <Users className="h-10 w-10 mb-2" />
                     <CardTitle>Class Chats</CardTitle>
                     <CardDescription>
-                      Join chats for your classes and stay connected with classmates.
+                      Join chats for your classes and stay connected with
+                      classmates.
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -154,10 +142,11 @@ export default function LandingPage() {
                 </Card>
                 <Card>
                   <CardHeader>
-                    <Send className="h-10 w-10 mb-2" />
-                    <CardTitle>Direct Messages</CardTitle>
+                    <Search className="h-10 w-10 mb-2" />
+                    <CardTitle>Dynamic Course Search</CardTitle>
                     <CardDescription>
-                      Send private messages to your classmates directly.
+                      Seach all courses & sections for the current
+                      Spring 2025 term
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -166,74 +155,74 @@ export default function LandingPage() {
           </section>
         </div>
 
-        {/* Get Started Steps Section */}
         <section className="w-full py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-900">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="grid gap-12 lg:grid-cols-2 items-center">
-              {/* Left Content */}
               <div className="space-y-6">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                   Get Started in Seconds
                 </h2>
                 <p className="text-lg text-gray-600 dark:text-gray-400">
-                  No more hunting for Discord or GroupMe links. Osprey Chat makes it 
-                  effortless to connect with classmates. Just follow these simple steps:
+                  No more hunting for Discord or GroupMe links. Osprey Chat
+                  makes it effortless to connect with classmates. Just follow
+                  these simple steps:
                 </p>
 
-                {/* Steps */}
                 <ul className="grid gap-8">
-                  {/* Step 1 */}
                   <li className="flex items-start space-x-4">
                     <div className="flex items-center justify-center w-10 h-10 bg-gray-500 text-white rounded-full font-bold">
                       1
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">Sign In with Google</h3>
+                      <h3 className="text-lg font-semibold">
+                        Sign In with Google
+                      </h3>
                       <p className="text-gray-600 dark:text-gray-400 text-sm">
-                        Use your Stockton Google account to log in—no extra accounts needed.
+                        Use your Stockton Google account to log in—no extra
+                        accounts needed.
                       </p>
                     </div>
                   </li>
 
-                  {/* Step 2 */}
                   <li className="flex items-start space-x-4">
                     <div className="flex items-center justify-center w-10 h-10 bg-gray-500 text-white rounded-full font-bold">
                       2
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">Find Your Classes</h3>
+                      <h3 className="text-lg font-semibold">
+                        Find Your Classes
+                      </h3>
                       <p className="text-gray-600 dark:text-gray-400 text-sm">
-                        Just enter your course IDs and we&apos;ll instantly 
+                        Just enter your course IDs and we&apos;ll instantly
                         connect you to the right chat rooms.
                       </p>
                     </div>
                   </li>
 
-                  {/* Step 3 */}
                   <li className="flex items-start space-x-4">
                     <div className="flex items-center justify-center w-10 h-10 bg-gray-500 text-white rounded-full font-bold">
                       3
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">Start Chatting Instantly</h3>
+                      <h3 className="text-lg font-semibold">
+                        Start Chatting Instantly
+                      </h3>
                       <p className="text-gray-600 dark:text-gray-400 text-sm">
-                        Ask questions, share resources, and stay updated—all in real time.
+                        Ask questions, share resources, and stay updated—all in
+                        real time.
                       </p>
                     </div>
                   </li>
                 </ul>
               </div>
 
-              {/* Right Side: Chat UI Mockup */}
               <div className="flex items-center justify-center">
                 <ChatCard />
               </div>
-
             </div>
           </div>
         </section>
 
-        {/* NEW SECTION (ABOUT OSPREY CHAT) */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="max-w-3xl mx-auto text-center space-y-6">
@@ -241,16 +230,16 @@ export default function LandingPage() {
                 Built by Students, For Students
               </h2>
               <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                Osprey Chat was built by Stockton students, for Stockton students—
-                exclusively for our campus community. Only verified Stockton students
-                can sign up—no spam, no outsiders. Just a seamless, real-time chat
-                experience for your courses and connections. 🚀
+                Osprey Chat was built by Stockton students, for Stockton
+                students— exclusively for our campus community. Only verified
+                Stockton students can sign up—no spam, no outsiders. Just a
+                seamless, real-time chat experience for your courses and
+                connections. 🚀
               </p>
             </div>
           </div>
         </section>
 
-        {/* Call To Action Section */}
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center space-y-4 text-center">
@@ -259,8 +248,8 @@ export default function LandingPage() {
                   Ready to start chatting?
                 </h2>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Join your classmates already enjoying OspreyChat. 
-                  Create an account in seconds and start chatting!
+                  Join your classmates already enjoying OspreyChat. Create an
+                  account in seconds and start chatting!
                 </p>
               </div>
               <div className="w-full max-w-sm space-y-2">
@@ -283,10 +272,16 @@ export default function LandingPage() {
               © {new Date().getFullYear()} OspreyChat. All rights reserved.
             </p>
             <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-              <a className="text-xs hover:underline underline-offset-4" href="#">
+              <a
+                className="text-xs hover:underline underline-offset-4"
+                href="#"
+              >
                 Terms of Service
               </a>
-              <a className="text-xs hover:underline underline-offset-4" href="#">
+              <a
+                className="text-xs hover:underline underline-offset-4"
+                href="#"
+              >
                 Privacy
               </a>
             </nav>
