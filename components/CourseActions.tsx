@@ -49,6 +49,16 @@ export default function CourseActions({ roomId }: CourseActionsProps) {
 
     const data = await res.json()
 
+    if (res.status === 429) {
+      toast.error(
+        'You are leaving courses too quickly. Please wait a few seconds.',
+        {
+          position: 'top-right',
+        },
+      )
+      return
+    }
+
     if (!res.ok) {
       console.error('Error leaving course', data.error)
       toast.error('Failed to leave course')
@@ -101,7 +111,7 @@ export default function CourseActions({ roomId }: CourseActionsProps) {
             <AlertDialogCancel onClick={() => setIsOpen(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleLeave} >
+            <AlertDialogAction onClick={handleLeave}>
               Leave Course
             </AlertDialogAction>
           </AlertDialogFooter>

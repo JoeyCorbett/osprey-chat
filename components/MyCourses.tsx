@@ -6,7 +6,7 @@ import { Skeleton } from './ui/skeleton'
 import { Button } from './ui/button'
 import { useRouter } from 'next/navigation'
 import CourseList from '@/components/CourseList'
-
+import { FeedbackDialog } from '@/components/FeedbackDialog'
 const fetcher = async () => {
   const res = await fetch('/api/my-courses')
   if (!res.ok) throw new Error('Failed to load courses')
@@ -54,8 +54,7 @@ export default function MyCourses() {
             You&apos;re not in any courses yet
           </h2>
           <p className="text-sm text-gray-600 mt-2">
-            Join a course to start participating in discussions and accessing
-            resources.
+            Join a course to start chatting with your classmates instantly.
           </p>
           <Button className="m-4" onClick={() => router.push('/search')}>
             Find Courses
@@ -64,6 +63,7 @@ export default function MyCourses() {
       ) : (
         <CourseList initialCourses={courseRooms} />
       )}
+      <FeedbackDialog />
     </div>
   )
 }

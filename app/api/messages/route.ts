@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
+import { messageRateLimiter } from '@/lib/rateLimiter'
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient()
@@ -49,6 +50,15 @@ export async function POST(req: NextRequest) {
   const { data: user, error: userError } = await supabase.auth.getUser()
   if (userError || !user?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+  }
+
+  const identifier =
+    user?.user.id || req.headers.get('x-forwarded-for') || 'anonymous'
+
+  const { success } = await messageRateLimiter.limit(identifier)
+
+  if (!success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
   }
 
   const { roomId, content } = await req.json()

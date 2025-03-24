@@ -23,9 +23,19 @@ export default function MessageInput({ roomId }: MessageInputProps) {
       },
     })
 
+    if (res.status === 429) {
+      toast.error(
+        'You are sending messages too quickly. Please wait a few seconds.',
+        { position: 'top-right' },
+      )
+      return
+    }
+
     if (!res.ok) {
       console.error('Failed to send message')
-      toast.error('Failed to send message. Please try again.')
+      toast.error('Failed to send message. Please try again.', {
+        position: 'top-right',
+      })
       return
     }
     setValue('')

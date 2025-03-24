@@ -85,7 +85,7 @@ export default function MessageItem({
       if (!res.ok) throw new Error('Failed to delete message')
     } catch {
       toast.error('Failed to delete message', {
-        position: 'top-center',
+        position: 'top-right',
       })
     }
   }
@@ -150,7 +150,7 @@ export default function MessageItem({
               <ContextMenuItem
                 onClick={() =>
                   toast.info('Edit feature coming soon', {
-                    position: 'top-center',
+                    position: 'top-right',
                   })
                 }
               >

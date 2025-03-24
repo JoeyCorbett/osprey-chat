@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 import { insertUserIntoRoom } from '@/utils/db'
-
+import { chatJoinRateLimiter } from '@/lib/rateLimiter'
 export async function POST(req: Request) {
   const supabase = await createClient()
 
@@ -21,6 +21,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     const userId = userData.user.id
+
+    const identifier =
+      userData.user.id || req.headers.get('x-forwarded-for') || 'anonymous'
+
+    const { success } = await chatJoinRateLimiter.limit(identifier)
+
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      )
+    }
 
     // Check if user already joined more than 5 rooms
     const { count, error: countError } = await supabase

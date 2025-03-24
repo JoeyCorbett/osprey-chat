@@ -28,6 +28,17 @@ export default function JoinCourseButton({
       body: JSON.stringify({ courseId, sectionId }),
     })
 
+    if (res.status === 429) {
+      toast.error(
+        'You are joining courses too quickly. Please wait a few seconds.',
+        {
+          position: 'top-right',
+        },
+      )
+      setIsJoining(false)
+      return
+    }
+
     const data = await res.json()
 
     if (!res.ok) {
