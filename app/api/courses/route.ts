@@ -24,7 +24,7 @@ export async function GET(req: Request) {
   // For title search, split into words and create a flexible pattern
   // This will match titles where words appear in sequence with any amount of whitespace between them
   const words = cleanQuery.split(' ').filter(word => word.length > 0)
-  let titlePattern = words.length > 0 
+  const titlePattern = words.length > 0 
     ? words.map(word => `%${word}%`).join('') 
     : `%${cleanQuery}%`
 
