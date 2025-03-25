@@ -14,15 +14,12 @@ import {
 type Section = Database['public']['Tables']['sections']['Row']
 type Course = Database['public']['Tables']['courses']['Row']
 
-export default function CourseCard({
-  course,
-}: {
-  course: Course
-}) {
+export default function CourseCard({ course }: { course: Course }) {
   const [courseInfo, setCourseInfo] = useState<Section[]>([])
   const [selectedSection, setSelectedSection] = useState<Section>()
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
+  const [sectionSelected, setSectionSelected] = useState(false)
 
   const fetchSections = async () => {
     if (courseInfo.length > 0) return
@@ -42,13 +39,18 @@ export default function CourseCard({
   function formatSection(section: string) {
     return section.toString().padStart(3, '0')
   }
-  
+
   return (
     <Dialog
       open={open}
       onOpenChange={(isOpen) => {
         setOpen(isOpen)
-        if (isOpen) fetchSections()
+        if (isOpen) {
+          fetchSections()
+        } else {
+          setSelectedSection(undefined)
+          setSectionSelected(false)
+        }
       }}
     >
       <DialogTrigger asChild>
@@ -79,7 +81,10 @@ export default function CourseCard({
               courseInfo.map((info) => (
                 <button
                   key={info.id}
-                  onClick={() => setSelectedSection(info)}
+                  onClick={() => {
+                    setSelectedSection(info)
+                    setSectionSelected(true)
+                  }}
                   className={`w-full px-4 py-3 text-left rounded-lg border ${
                     selectedSection?.section === info.section
                       ? 'bg-black text-white border-gray-800 shadow-sm hover:bg-gray-900'
@@ -113,7 +118,7 @@ export default function CourseCard({
           <JoinCourseButton
             courseId={course.id}
             sectionId={selectedSection?.id || ''}
-            disabled={loading || !courseInfo.length}
+            disabled={loading || !courseInfo.length || !sectionSelected}
           />
         </div>
       </DialogContent>
