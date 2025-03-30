@@ -1,7 +1,7 @@
 'use client'
 
 import { Database } from '@/types/database.types'
-import { format } from 'date-fns'
+import { format, isToday, isYesterday } from 'date-fns'
 import Image from 'next/image'
 import { Trash2 } from 'lucide-react'
 import { Pencil } from 'lucide-react'
@@ -23,6 +23,27 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+
+/**
+ * Helper function to format message time based on the date.
+ * - If the message is from today, it returns "Today at [time]".
+ * - If the message is from yesterday, it returns "Yesterday at [time]".
+ * - Otherwise, it returns the date in the format "M/d/yyyy h:mm a".
+ * 
+ * @param timestamp 
+ * @returns 
+ */
+function formatMessageTime(timestamp: string) {
+  const date = new Date(timestamp)
+  
+  if (isToday(date)) {
+    return `Today at ${format(date, 'h:mm a')}`
+  } else if (isYesterday(date)) {
+    return `Yesterday at ${format(date, 'h:mm a')}`
+  } else {
+    return format(date, 'M/d/yyyy h:mm a')
+  }
+}
 
 type Message = Database['public']['Tables']['messages']['Row'] & {
   profiles: Database['public']['Tables']['profiles']['Row'] | null
@@ -129,7 +150,7 @@ export default function MessageItem({
                         isUserMessage ? 'text-white' : 'text-gray-700'
                       }`}
                     >
-                      • {format(new Date(message.created_at), 'h:mm a')}
+                      • {formatMessageTime(message.created_at)}
                     </span>
                   </p>
                 )}
@@ -200,7 +221,7 @@ export default function MessageItem({
                   isUserMessage ? 'text-white' : 'text-gray-700'
                 }`}
               >
-                • {format(new Date(message.created_at), 'h:mm a')}
+                • {formatMessageTime(message.created_at)}
               </span>
             </p>
           )}
