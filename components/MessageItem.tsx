@@ -26,7 +26,7 @@ import {
 
 /**
  * Helper function to format message time based on the date.
- * - If the message is from today, it returns "Today at [time]".
+ * - If the message is from today, it returns "[time]".
  * - If the message is from yesterday, it returns "Yesterday at [time]".
  * - Otherwise, it returns the date in the format "M/d/yyyy h:mm a".
  * 
@@ -37,7 +37,7 @@ function formatMessageTime(timestamp: string): string {
   const date = new Date(timestamp)
   
   if (isToday(date)) {
-    return `Today at ${format(date, 'h:mm a')}`
+    return `${format(date, 'h:mm a')}`
   } else if (isYesterday(date)) {
     return `Yesterday at ${format(date, 'h:mm a')}`
   } else {
@@ -52,14 +52,12 @@ type Message = Database['public']['Tables']['messages']['Row'] & {
 interface MessageItemProps {
   message: Message
   user_id: string
-  isSameSenderAsPrev: boolean
   showTimestamp: boolean
 }
 
 export default function MessageItem({
   message,
   user_id,
-  isSameSenderAsPrev,
   showTimestamp,
 }: MessageItemProps) {
   const [alertOpen, setAlertOpen] = useState(false)
@@ -110,138 +108,102 @@ export default function MessageItem({
   }
 
   return (
-    <div
-      className={`flex items-end ${
-        isUserMessage ? 'justify-end' : 'justify-start'
-      } ${showTimestamp ? 'mt-4' : 'mt-1'}`}
-    >
-      {/* show avatar only for the first message in a group OR if a 5-minute gap exists */}
-      {showTimestamp && !isUserMessage && (
-        <Image
-          src={profile.avatar_url || '/default-avatar.png'}
-          alt={profile.username || 'User'}
-          width={36}
-          height={36}
-          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full mr-2 sm:mr-3 flex-shrink-0"
-          referrerPolicy="no-referrer"
-        />
-      )}
-
-      {isUserMessage ? (
-        <>
-          <ContextMenu>
-            <ContextMenuTrigger asChild>
-              <div
-                className={`relative px-3 py-2 sm:px-4 sm:py-2 max-w-[80%] sm:max-w-[75%] text-sm rounded-lg border
-          bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 ease-in-out
-          ${isSameSenderAsPrev && !showTimestamp ? 'mr-10 sm:mr-12' : ''}
-          shadow-sm select-none sm:select-auto`}
-              >
-                {/* Show username & timestamp only for first message in a group OR if 5+ min passed */}
-                {showTimestamp && (
-                  <p
-                    className={`text-xs font-semibold ${
-                      isUserMessage ? 'text-white' : 'text-gray-700'
-                    } mb-1 sm:mb-2`}
-                  >
-                    {profile.username || 'Unknown User'}{' '}
-                    <span
-                      className={`text-xs font-normal ${
-                        isUserMessage ? 'text-white' : 'text-gray-700'
-                      }`}
-                    >
-                      • {formatMessageTime(message.created_at)}
-                    </span>
-                  </p>
-                )}
-                <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
-                  {message.content}
-                </p>
-              </div>
-            </ContextMenuTrigger>
-            <ContextMenuContent>
-              <ContextMenuItem
-                onClick={() =>
-                  toast.info('Edit feature coming soon', {
-                    position: 'top-right',
-                  })
-                }
-              >
-                <Pencil className="w-4 h-4 mr-2" />
-                Edit
-              </ContextMenuItem>
-              <ContextMenuItem
-                onClick={() => setAlertOpen(true)}
-                className="text-red-500"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete
-              </ContextMenuItem>
-            </ContextMenuContent>
-          </ContextMenu>
-
-          <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete Message</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to delete this message? This action
-                  cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDelete}
-                  className="bg-red-500 hover:bg-red-600"
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </>
-      ) : (
-        <div
-          className={`relative px-3 py-2 sm:px-4 sm:py-2 max-w-[80%] sm:max-w-[75%] text-sm rounded-lg border
-      bg-gray-100 text-gray-900 ${
-        isSameSenderAsPrev && !showTimestamp ? 'ml-10 sm:ml-12' : ''
-      }
-      shadow-sm`}
-        >
+    <div className={`flex flex-col ${showTimestamp ? 'mt-4' : 'mt-0'}`}>
+      {/* Message content */}
+      <div className="flex">
+        {/* Avatar - shown only when showTimestamp is true */}
+        {showTimestamp && (
+          <div className="flex-shrink-0 w-10 sm:w-12 mr-2">
+            <Image
+              src={profile.avatar_url || '/default-avatar.png'}
+              alt={profile.username || 'User'}
+              width={36}
+              height={36}
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+        )}
+        
+        {/* Empty space to align messages when no avatar is shown */}
+        {!showTimestamp && (
+          <div className="flex-shrink-0 w-10 sm:w-12 mr-2"></div>
+        )}
+        
+        <div className="flex-1">
+          {/* Username and timestamp - shown only when showTimestamp is true */}
           {showTimestamp && (
-            <p
-              className={`text-xs font-semibold ${
-                isUserMessage ? 'text-white' : 'text-gray-700'
-              } mb-1 sm:mb-2`}
-            >
-              {profile.username || 'Unknown User'}{' '}
-              <span
-                className={`text-xs font-normal ${
-                  isUserMessage ? 'text-white' : 'text-gray-700'
-                }`}
-              >
-                • {formatMessageTime(message.created_at)}
+            <div className="flex items-baseline mb-1">
+              <span className="font-semibold text-sm">
+                {profile.username || 'Unknown User'}
               </span>
-            </p>
+              <span className="text-xs text-gray-500 ml-2">
+                {formatMessageTime(message.created_at)}
+              </span>
+            </div>
           )}
-          <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
-            {message.content}
-          </p>
+          
+          {/* Message text */}
+          {isUserMessage ? (
+            <ContextMenu>
+              <ContextMenuTrigger asChild>
+                <div className="relative py-1 pl-0.5 rounded hover:bg-gray-200 transition-colors duration-200">
+                  <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
+                    {message.content}
+                  </p>
+                </div>
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuItem
+                  onClick={() =>
+                    toast.info('Edit feature coming soon', {
+                      position: 'top-right',
+                    })
+                  }
+                >
+                  <Pencil className="w-4 h-4 mr-2" />
+                  Edit
+                </ContextMenuItem>
+                <ContextMenuItem
+                  onClick={() => setAlertOpen(true)}
+                  className="text-red-500"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
+          ) : (
+            <div className="relative py-1 pl-0.5">
+              <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
+                {message.content}
+              </p>
+            </div>
+          )}
         </div>
-      )}
-
-      {/* Show avatar only for the first sent message in a group OR if a 5-minute gap exists */}
-      {showTimestamp && isUserMessage && (
-        <Image
-          src={profile.avatar_url || '/default-avatar.png'}
-          alt="Your Profile"
-          width={32}
-          height={32}
-          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full ml-2 sm:ml-3 flex-shrink-0"
-          referrerPolicy="no-referrer"
-        />
-      )}
+      </div>
+      
+      {/* Keep the alert dialog for message deletion */}
+      <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Message</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this message? This action
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
