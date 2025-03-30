@@ -99,7 +99,6 @@ export default function MessagesList({
                       key={msg.id}
                       message={{ ...msg, profiles: profile }}
                       user_id={user_id}
-                      isSameSenderAsPrev={isSameSenderAsPrev}
                       showTimestamp={shouldShowAvatarAndUsername}
                     />
                   )
