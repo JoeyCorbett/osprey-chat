@@ -30,10 +30,10 @@ import {
  * - If the message is from yesterday, it returns "Yesterday at [time]".
  * - Otherwise, it returns the date in the format "M/d/yyyy h:mm a".
  * 
- * @param timestamp 
- * @returns 
+ * @param timestamp - the timestamp of when the message was sent.
+ * @returns the formatted message time as a string.
  */
-function formatMessageTime(timestamp: string) {
+function formatMessageTime(timestamp: string): string {
   const date = new Date(timestamp)
   
   if (isToday(date)) {
