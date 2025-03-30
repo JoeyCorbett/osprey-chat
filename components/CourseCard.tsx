@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ChevronRight } from 'lucide-react'
 import { Database } from '@/types/database.types'
 import JoinCourseButton from '@/components/JoinCourseButton'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Dialog,
   DialogContent,
@@ -72,49 +73,51 @@ export default function CourseCard({ course }: { course: Course }) {
           Select the section for this course below.
         </DialogDescription>
         <div className="space-y-4">
-          <div className="space-y-2">
-            {loading ? (
-              <div className="flex justify-center py-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-blue-500" />
-              </div>
-            ) : courseInfo.length > 0 ? (
-              courseInfo.map((info) => (
-                <button
-                  key={info.id}
-                  onClick={() => {
-                    setSelectedSection(info)
-                    setSectionSelected(true)
-                  }}
-                  className={`w-full px-4 py-3 text-left rounded-lg border ${
-                    selectedSection?.section === info.section
-                      ? 'bg-black text-white border-gray-800 shadow-sm hover:bg-gray-900'
-                      : 'bg-white hover:bg-gray-50 border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-medium">{course.code}</span>
-                      <span className="text-gray-400">•</span>
-                      <span className="font-medium">
-                        {formatSection(info.section)}
+          {loading ? (
+            <div className="flex justify-center py-2">
+              <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-blue-500" />
+            </div>
+          ) : courseInfo.length > 0 ? (
+            <ScrollArea className="h-[300px] max-h-[50vh] pr-4">
+              <div className="space-y-2">
+                {courseInfo.map((info) => (
+                  <button
+                    key={info.id}
+                    onClick={() => {
+                      setSelectedSection(info)
+                      setSectionSelected(true)
+                    }}
+                    className={`w-full px-4 py-3 text-left rounded-lg border ${
+                      selectedSection?.section === info.section
+                        ? 'bg-black text-white border-gray-800 shadow-sm hover:bg-gray-900'
+                        : 'bg-white hover:bg-gray-50 border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium">{course.code}</span>
+                        <span className="text-gray-400">•</span>
+                        <span className="font-medium">
+                          {formatSection(info.section)}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-sm ${
+                          selectedSection?.section === info.section
+                            ? 'text-blue-100'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        {info.instructor}
                       </span>
                     </div>
-                    <span
-                      className={`text-sm ${
-                        selectedSection?.section === info.section
-                          ? 'text-blue-100'
-                          : 'text-gray-600'
-                      }`}
-                    >
-                      {info.instructor}
-                    </span>
-                  </div>
-                </button>
-              ))
-            ) : (
-              <p className="text-gray-500 text-sm">No sections available</p>
-            )}
-          </div>
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          ) : (
+            <p className="text-gray-500 text-sm">No sections available</p>
+          )}
           <JoinCourseButton
             courseId={course.id}
             sectionId={selectedSection?.id || ''}
