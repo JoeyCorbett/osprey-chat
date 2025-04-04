@@ -13,7 +13,16 @@ interface ChatPageProps {
 }
 
 export default function ChatPage({ roomId, user }: ChatPageProps) {
-  const { data: messages } = useMessagesQuery(roomId)
+  const { data: messages = [], isLoading } = useMessagesQuery(roomId)
+
+  if (isLoading) {
+    return (
+      // Loading spinner
+      <div className="flex items-center justify-center h-[85vh] py-8">
+        <div className="w-6 h-6 border-2 border-muted rounded-full border-t-primary animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <RealtimeChat

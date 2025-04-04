@@ -1,6 +1,8 @@
 import { cn } from '@/lib/utils'
 import type { ChatMessage } from '@/hooks/use-realtime-chat'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import Linkify from 'linkify-react'
+
 interface ChatMessageItemProps {
   message: ChatMessage
   isOwnMessage: boolean
@@ -17,7 +19,6 @@ export const ChatMessageItem = ({
     .map((name) => name[0])
     .join('')
     ?.toUpperCase()
-  
 
   return (
     <div
@@ -60,13 +61,23 @@ export const ChatMessageItem = ({
         )}
         <div
           className={cn(
-            'py-2 px-3 rounded-xl text-sm w-fit',
+            'py-2 px-3 rounded-xl text-sm w-fit break-words whitespace-pre-wrap overflow-hidden max-w-full',
             isOwnMessage
               ? 'bg-primary text-primary-foreground'
               : 'bg-muted text-foreground',
           )}
         >
-          {message.content}
+          <Linkify
+            options={{
+              attributes: {
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                className: 'underline text-blue-500 break-all',
+              },
+            }}
+          >
+            {message.content}
+          </Linkify>
         </div>
       </div>
     </div>
