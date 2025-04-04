@@ -14,21 +14,18 @@ export function useChatScroll() {
     })
   }, [])
 
-  // Only on initial mount
   useLayoutEffect(() => {
     scrollToBottom('auto')
   }, [scrollToBottom])
 
-  // Track user scroll position
   const handleScroll = useCallback(() => {
     const el = containerRef.current
     if (!el) return
 
     const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
-    setIsUserAtBottom(distanceFromBottom < 50) // pixel threshold
+    setIsUserAtBottom(distanceFromBottom < 50)
   }, [])
 
-  // Attach scroll listener
   useLayoutEffect(() => {
     const el = containerRef.current
     if (!el) return

@@ -19,7 +19,7 @@ export interface ChatMessage {
     username: string
     avatar_url: string
   }
-  createdAt: string
+  created_at: string
 }
 
 const EVENT_MESSAGE_TYPE = 'message'
@@ -31,6 +31,7 @@ export function useRealtimeChat({
   avatar_url,
 }: UseRealtimeChatProps) {
   const supabase = createClient()
+
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [channel, setChannel] = useState<ReturnType<
     typeof supabase.channel
@@ -70,19 +71,37 @@ export function useRealtimeChat({
           username,
           avatar_url,
         },
-        createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       }
 
       // Update local state immediately for the sender
       setMessages((current) => [...current, message])
 
-      await channel.send({
-        type: 'broadcast',
-        event: EVENT_MESSAGE_TYPE,
-        payload: message,
-      })
+      try {
+        // Insert into database
+        const { error } = await supabase.from('messages').insert({
+          id: message.id,
+          content: message.content,
+          room_id: message.room_id,
+          user_id: message.user_id,
+          created_at: message.created_at,
+        })
+        if (error) {
+          console.error('Error sending message', error.message)
+          return
+        }
+
+        // Broadcast to other clients
+        await channel.send({
+          type: 'broadcast',
+          event: EVENT_MESSAGE_TYPE,
+          payload: message,
+        })
+      } catch (err) {
+        console.error('sendMessage failed', err)
+      }
     },
-    [channel, isConnected, userId, roomId, username, avatar_url],
+    [channel, isConnected, userId, roomId, username, avatar_url, supabase],
   )
 
   return { messages, sendMessage, isConnected }

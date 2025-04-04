@@ -5,20 +5,19 @@ interface ChatMessageItemProps {
   message: ChatMessage
   isOwnMessage: boolean
   showHeader: boolean
-  avatar_url: string
 }
 
 export const ChatMessageItem = ({
   message,
   isOwnMessage,
   showHeader,
-  avatar_url,
 }: ChatMessageItemProps) => {
   const initials = message.profiles.username
     .split(' ')
     .map((name) => name[0])
     .join('')
     ?.toUpperCase()
+  
 
   return (
     <div
@@ -34,7 +33,7 @@ export const ChatMessageItem = ({
             isOwnMessage ? 'order-2 ml-2' : 'mr-2',
           )}
         >
-          <AvatarImage src={avatar_url} alt={initials} />
+          <AvatarImage src={message.profiles.avatar_url} alt={initials} />
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
       )}
@@ -51,7 +50,7 @@ export const ChatMessageItem = ({
           >
             <span className={'font-medium'}>{message.profiles.username}</span>
             <span className="text-foreground/50 text-xs">
-              {new Date(message.createdAt).toLocaleTimeString('en-US', {
+              {new Date(message.created_at).toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: true,

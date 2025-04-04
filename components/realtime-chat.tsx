@@ -6,7 +6,7 @@ import { useChatScroll } from '@/hooks/use-chat-scroll'
 import { type ChatMessage, useRealtimeChat } from '@/hooks/use-realtime-chat'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Send, ChevronDown } from 'lucide-react'
+import { Send, ChevronDown, MessageCircle } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface RealtimeChatProps {
@@ -14,7 +14,6 @@ interface RealtimeChatProps {
   userId: string
   username: string
   avatar_url: string
-  onMessage?: (messages: ChatMessage[]) => void
   messages?: ChatMessage[]
 }
 
@@ -24,7 +23,6 @@ interface RealtimeChatProps {
  * @param userId - The user id of the user
  * @param username - The username of the user
  * @param avatar_url - The avatar url of the user
- * @param onMessage - The callback function to handle the messages. Useful if you want to store the messages in a database.
  * @param messages - The messages to display in the chat. Useful if you want to display messages from a database.
  * @returns The chat component
  */
@@ -33,7 +31,6 @@ export const RealtimeChat = ({
   userId,
   username,
   avatar_url,
-  onMessage,
   messages: initialMessages = [],
 }: RealtimeChatProps) => {
   const { containerRef, scrollToBottom, isUserAtBottom } = useChatScroll()
@@ -66,17 +63,11 @@ export const RealtimeChat = ({
     )
     // Sort by creation date
     const sortedMessages = uniqueMessages.sort((a, b) =>
-      a.createdAt.localeCompare(b.createdAt),
+      a.created_at.localeCompare(b.created_at),
     )
 
     return sortedMessages
   }, [realtimeMessages, initialMessages])
-
-  useEffect(() => {
-    if (onMessage) {
-      onMessage(allMessages)
-    }
-  }, [allMessages, onMessage])
 
   useEffect(() => {
     // Scroll to bottom whenever messages change
@@ -100,8 +91,12 @@ export const RealtimeChat = ({
       <div ref={containerRef} className="flex-1 overflow-y-auto p-5 space-y-4">
         <div className="flex flex-col justify-end min-h-full max-w-2xl w-full mx-auto">
           {allMessages.length === 0 ? (
-            <div className="text-center text-sm text-muted-foreground mx-auto">
-              No messages yet. Start the conversation!
+            <div className="flex-grow flex flex-col items-center justify-center text-center text-gray-500 px-4">
+              <MessageCircle className="w-12 h-12 sm:w-14 sm:h-14 text-gray-400 mb-3" />
+              <p className="text-lg font-semibold">No messages yet</p>
+              <p className="text-sm text-gray-400 max-w-xs">
+                Start the conversation for this course!
+              </p>
             </div>
           ) : null}
           {allMessages.map((message, index) => {
@@ -118,7 +113,6 @@ export const RealtimeChat = ({
                   message={message}
                   isOwnMessage={message.user_id === userId}
                   showHeader={showHeader}
-                  avatar_url={avatar_url}
                 />
               </div>
             )
@@ -139,7 +133,7 @@ export const RealtimeChat = ({
                 className="rounded-full bg-background border text-foreground"
                 onClick={() => scrollToBottom('smooth')}
               >
-                <ChevronDown className="w-3  h-3" />
+                <ChevronDown className="w-4 h-4" />
               </Button>
             </div>
           )}

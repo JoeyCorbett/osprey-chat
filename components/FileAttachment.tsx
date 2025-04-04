@@ -3,7 +3,6 @@
 import { FileText, Image as ImageIcon, Download } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
 import { useState } from 'react'
 
 interface FileAttachmentProps {
@@ -13,7 +12,7 @@ interface FileAttachmentProps {
 }
 
 export function FileAttachment({ fileName, fileUrl, className }: FileAttachmentProps) {
-  const [hasError, setHasError] = useState(false)
+  const [hasError] = useState(false)
 
   function getFileTypeIcon(fileName: string) {
     const extension = fileName.split('.').pop()?.toLowerCase()

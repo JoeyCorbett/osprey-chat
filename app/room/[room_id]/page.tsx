@@ -61,7 +61,6 @@ export default async function RoomPage({
 
   if (error || !room) {
     console.error('Error fetching room', error)
-    toast.error('There was an error fetching course info')
     redirect('/chats')
   }
 
