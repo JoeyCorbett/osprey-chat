@@ -26,7 +26,9 @@ export async function GET(req: NextRequest) {
 
   const { data: messages, error: messagesError } = await supabase
     .from('messages')
-    .select('id, content, created_at, user_id, profiles(username, avatar_url)')
+    .select(
+      'id, content, created_at, user_id, profiles(username, avatar_url)',
+    )
     .eq('room_id', roomId)
     .order('created_at', { ascending: false })
     .limit(50)
@@ -61,7 +63,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
   }
 
-  const { roomId, content } = await req.json()
+  const { roomId, content, file_url, file_name, file_type } = await req.json()
 
   const { data: membership, error: membershipError } = await supabase
     .from('course_members')

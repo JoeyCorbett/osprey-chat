@@ -118,6 +118,23 @@ export default function ChatRoomClient({
           )
         },
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'messages',
+          filter: `room_id=eq.${roomId}`,
+        },
+        (payload) => {
+          const updated = payload.new as Message
+          setMessages((prev) =>
+            prev.map((message) =>
+              message.id === updated.id ? updated : message,
+            ),
+          )
+        },
+      )
       .subscribe()
 
     return () => {

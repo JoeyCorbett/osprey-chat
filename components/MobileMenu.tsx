@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Menu, X, MessageCircle, Search } from 'lucide-react'
-import LogoutButton from '@/components/LogoutButton'
+import { Menu, X, MessageCircle, Search, LogOut } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { useLogout } from '@/hooks/useLogout'
 
 interface MobileMenuProps {
   avatar: string
@@ -18,6 +19,7 @@ export default function MobileMenu({
   name,
 }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const logout = useLogout()
 
   return (
     <>
@@ -66,8 +68,10 @@ export default function MobileMenu({
             </span>
           </div>
 
-          {/* Logout Button at the Bottom */}
-          <LogoutButton isMobile={true} />
+          <Button variant="outline" onClick={logout}>
+            <LogOut />
+            Sign out
+          </Button>
         </div>
       </div>
     </>

@@ -1,5 +1,3 @@
-import ChatRoomClient from '@/components/ChatRoomClient'
-import MessageInput from '@/components/MessageInput'
 import RoomUsersPopover from '@/components/RoomUsersPopover'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -7,6 +5,7 @@ import { createClient } from '@/utils/supabase/server'
 import { toast } from 'sonner'
 import { PostgrestError } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
+import ChatPage from '@/components/ChatPage'
 
 interface Course {
   id: string
@@ -33,13 +32,23 @@ export default async function RoomPage({
   params: Promise<{ room_id: string }>
 }) {
   const supabase = await createClient()
-
   const { room_id } = await params
 
-  // Check if user is authenticated
-  const { data: user, error: userError } = await supabase.auth.getUser()
-  if (userError || !user?.user) {
-    redirect('/login')
+  const { data: user } = await supabase.auth.getUser()
+
+  if (!user?.user) {
+    redirect('/')
+  }
+
+  const userData = {
+    id: user.user.id,
+    username: user.user.user_metadata?.name,
+    avatar_url: user.user.user_metadata?.avatar_url,
+  }
+
+  if (!userData.username || !userData.avatar_url || !userData.id) {
+    console.error('User data is missing')
+    redirect('/chats')
   }
 
   const { data: room, error } = (await supabase
@@ -82,15 +91,9 @@ export default async function RoomPage({
         <RoomUsersPopover roomId={room_id} />
       </header>
 
-      <main className="flex-1 overflow-y-auto bg-gray-50">
-        <div className="h-full">
-          <ChatRoomClient roomId={room_id} user_id={user.user.id} />
-        </div>
-      </main>
-
-      <footer className="p-3 sm:p-4 border-t bg-white sticky bottom-0 z-10">
-        <MessageInput roomId={room_id} />
-      </footer>
+      <div className="flex-1 overflow-y-auto">
+        <ChatPage roomId={room_id} user={userData} />
+      </div>
     </div>
   )
 }

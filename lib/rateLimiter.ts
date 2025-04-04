@@ -18,3 +18,9 @@ export const feedbackRateLimiter = new Ratelimit({
   limiter: Ratelimit.slidingWindow(1, '60s'),
   analytics: true,
 })
+
+export const fileUploadRateLimiter = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(5, '60s'),
+  analytics: true,
+})
