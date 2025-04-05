@@ -130,6 +130,7 @@ export const RealtimeChat = ({
               <Button
                 size="icon"
                 variant="outline"
+                type="button"
                 className="rounded-full bg-background border text-foreground"
                 onClick={() => scrollToBottom('smooth')}
               >

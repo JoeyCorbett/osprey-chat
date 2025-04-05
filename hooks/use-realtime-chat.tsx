@@ -39,15 +39,23 @@ export function useRealtimeChat({
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    const newChannel = supabase.channel(roomId)
+    const newChannel = supabase.channel(roomId, {
+      config: { private: true },
+    })
+
+    console.log('newChannel', roomId)
 
     newChannel
       .on('broadcast', { event: EVENT_MESSAGE_TYPE }, (payload) => {
+        console.log('received message', payload.payload)
         setMessages((current) => [...current, payload.payload as ChatMessage])
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
           setIsConnected(true)
+          console.log('connected to channel', roomId)
+        } else {
+          console.log('subscription status', status)
         }
       })
 
@@ -90,6 +98,8 @@ export function useRealtimeChat({
           console.error('Error sending message', error.message)
           return
         }
+
+        console.log('Sent message', message)
 
         // Broadcast to other clients
         await channel.send({

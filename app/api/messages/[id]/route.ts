@@ -20,7 +20,7 @@ export async function DELETE(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
-  // Fetch message (user_id, file_url)
+  // Fetch message (user_id, file_url) 
   const { data: message, error: messageError } = await supabase
     .from('messages')
     .select('user_id, file_url')
