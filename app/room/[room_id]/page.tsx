@@ -59,7 +59,7 @@ export default async function RoomPage({
     .single()) as { data: Room | null; error: PostgrestError | null }
 
   if (error || !room) {
-    console.error('Error fetching room', error)
+    console.error('Error fetching room',error)
     redirect('/chats')
   }
 

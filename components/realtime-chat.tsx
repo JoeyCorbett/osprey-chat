@@ -1,13 +1,12 @@
 'use client'
 
-import { cn } from '@/lib/utils'
 import { ChatMessageItem } from '@/components/chat-message'
 import { useChatScroll } from '@/hooks/use-chat-scroll'
 import { type ChatMessage, useRealtimeChat } from '@/hooks/use-realtime-chat'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Send, ChevronDown, MessageCircle } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ChevronDown, MessageCircle } from 'lucide-react'
+import { useEffect, useMemo } from 'react'
+import { ChatInput } from '@/components/chat-input'
 
 interface RealtimeChatProps {
   roomId: string
@@ -51,39 +50,27 @@ export const RealtimeChat = ({
     username,
     avatar_url,
   })
-  const [newMessage, setNewMessage] = useState('')
 
-  // Merge realtime messages with initial messages
+  // Optimize message merging and sorting
   const allMessages = useMemo(() => {
-    const mergedMessages = [...initialMessages, ...realtimeMessages]
-    // Remove duplicates based on message id
-    const uniqueMessages = mergedMessages.filter(
-      (message, index, self) =>
-        index === self.findIndex((m) => m.id === message.id),
-    )
-    // Sort by creation date
-    const sortedMessages = uniqueMessages.sort((a, b) =>
+    const messageMap = new Map<string, ChatMessage>()
+
+    // Add initial messages
+    initialMessages.forEach((msg) => messageMap.set(msg.id, msg))
+
+    // Add realtime messages (they will override initial messages if they exist)
+    realtimeMessages.forEach((msg) => messageMap.set(msg.id, msg))
+
+    // Convert back to array and sort
+    return Array.from(messageMap.values()).sort((a, b) =>
       a.created_at.localeCompare(b.created_at),
     )
-
-    return sortedMessages
   }, [realtimeMessages, initialMessages])
 
   useEffect(() => {
     // Scroll to bottom whenever messages change
     scrollToBottom()
   }, [allMessages, scrollToBottom])
-
-  const handleSendMessage = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault()
-      if (!newMessage.trim() || !isConnected) return
-
-      sendMessage(newMessage)
-      setNewMessage('')
-    },
-    [newMessage, isConnected, sendMessage],
-  )
 
   return (
     <div className="flex flex-col h-full w-full bg-background text-foreground antialiased">
@@ -120,48 +107,21 @@ export const RealtimeChat = ({
         </div>
       </div>
 
-      <div className="border-t border">
-        <form
-          onSubmit={handleSendMessage}
-          className="flex w-full gap-2 p-5 mx-auto max-w-2xl"
-        >
-          {!isUserAtBottom && (
-            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-10">
-              <Button
-                size="icon"
-                variant="outline"
-                type="button"
-                className="rounded-full bg-background border text-foreground"
-                onClick={() => scrollToBottom('smooth')}
-              >
-                <ChevronDown className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
-          <Input
-            className={cn(
-              'rounded-full bg-background text-sm transition-all duration-300',
-              isConnected && newMessage.trim()
-                ? 'w-[calc(100%-36px)]'
-                : 'w-full',
-            )}
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type a message..."
-            disabled={!isConnected}
-          />
-          {isConnected && newMessage.trim() && (
-            <Button
-              className="aspect-square rounded-full animate-in fade-in slide-in-from-right-4 duration-300"
-              type="submit"
-              disabled={!isConnected}
-            >
-              <Send className="size-4" />
-            </Button>
-          )}
-        </form>
-      </div>
+      {!isUserAtBottom && (
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-10">
+          <Button
+            size="icon"
+            variant="outline"
+            type="button"
+            className="rounded-full bg-background border text-foreground"
+            onClick={() => scrollToBottom('smooth')}
+          >
+            <ChevronDown className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
+
+      <ChatInput isConnected={isConnected} onSendMessageAction={sendMessage} />
     </div>
   )
 }

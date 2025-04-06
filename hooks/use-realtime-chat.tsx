@@ -39,31 +39,33 @@ export function useRealtimeChat({
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    const newChannel = supabase.channel(roomId, {
-      config: { private: true },
-    })
+    const setupSubscription = async () => {
+      await supabase.realtime.setAuth()
 
-    console.log('newChannel', roomId)
-
-    newChannel
-      .on('broadcast', { event: EVENT_MESSAGE_TYPE }, (payload) => {
-        console.log('received message', payload.payload)
-        setMessages((current) => [...current, payload.payload as ChatMessage])
-      })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
-          setIsConnected(true)
-          console.log('connected to channel', roomId)
-        } else {
-          console.log('subscription status', status)
-        }
+      const newChannel = supabase.channel(roomId, {
+        config: {
+          private: true,
+        },
       })
 
-    setChannel(newChannel)
+      newChannel
+        .on('broadcast', { event: EVENT_MESSAGE_TYPE }, (payload) => {
+          setMessages((current) => [...current, payload.payload as ChatMessage])
+        })
+        .subscribe(async (status) => {
+          if (status === 'SUBSCRIBED') {
+            setIsConnected(true)
+          }
+        })
 
-    return () => {
-      supabase.removeChannel(newChannel)
+      setChannel(newChannel)
+
+      return () => {
+        supabase.removeChannel(newChannel)
+      }
     }
+
+    setupSubscription()
   }, [roomId, userId, supabase])
 
   const sendMessage = useCallback(
