@@ -1,26 +1,39 @@
-# Osprey Chat
-⚠️ **Still in Development** ⚠️
+# 🦅 Osprey Chat
 
-Osprey Chat is a real-time messaging platform for Stockton University students. Instantly join course chat rooms and connect with classmates.
+🟢 **We’re Live!** – Osprey Chat is open to all Stockton University students.
 
-## Features
+**Osprey Chat** is a real-time messaging platform built for **Stockton University students**. Instantly join chat rooms based on your courses and connect with classmates — verified with your Stockton email.
 
-- 🔹 Course-based chat rooms  
-- 🔹 Real-time messaging  
-- 🔹 Google authentication (Stockton emails only)  
+---
 
-## Tech Stack
+## ✨ Features
 
-- **Next.js** – Server-side rendering & routing  
-- **TypeScript** – Static typing for better reliability  
+- 💬 **Real-time messaging** with instant updates  
+- 🏫 **Course-based chat rooms**, organized by course codes and sections  
+- 🔍 **Search any Stockton course by section** (e.g. `CSIS 2101-002`) and join instantly  
+- 🔐 **Google authentication** — restricted to `@go.stockton.edu` emails  
+- 🎨 Clean, responsive UI using Tailwind & ShadCN  
+
+---
+
+## 🛠 Tech Stack
+
+- **Next.js (App Router)** – Routing, SSR, and API routes  
+- **TypeScript** – Static typing for safer, scalable code  
 - **Tailwind CSS** – Utility-first styling  
-- **ShadCN** – Accessible UI components  
-- **Supabase (PostgreSQL)** – Authentication & real-time database  
+- **ShadCN/ui** – Accessible, customizable components  
+- **Supabase** – Auth + real-time PostgreSQL database  
 
-## Get Started
+---
 
-1. **Sign in** with your Stockton Google account.  
-2. **Search & join** your course chat rooms.  
-3. **Start chatting** with classmates instantly.  
+## 🚀 Getting Started
 
-👉 **Visit**: [osprey.chat](https://osprey.chat/)  
+1. Sign in using your **Stockton Google account** (`@go.stockton.edu`)  
+2. **Search for any Stockton course by section** (e.g. `GEN 1032-001`)  
+3. Join the chat room and start collaborating with classmates  
+
+---
+
+## 🔗 Live App
+
+👉 [**osprey.chat**](https://osprey.chat)
