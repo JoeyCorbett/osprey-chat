@@ -1,7 +1,27 @@
 import { cn } from '@/lib/utils'
 import type { ChatMessage } from '@/hooks/use-realtime-chat'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Linkify from 'linkify-react'
+import { Trash2, Pencil } from 'lucide-react'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { toast } from 'sonner'
+import { createClient } from '@/utils/supabase/client'
+import { useState } from 'react'
+import ChatBubble from '@/components/ChatBubble'
 
 interface ChatMessageItemProps {
   message: ChatMessage
@@ -14,11 +34,36 @@ export const ChatMessageItem = ({
   isOwnMessage,
   showHeader,
 }: ChatMessageItemProps) => {
+  const [alertOpen, setAlertOpen] = useState(false)
+
+  const supabase = createClient()
+
   const initials = message.profiles.username
     .split(' ')
     .map((name) => name[0])
     .join('')
     ?.toUpperCase()
+
+  const editMessage = () => {
+    toast.info('Edit feature coming soon!', {
+      position: 'top-right',
+    })
+  }
+
+  const deleteMessage = async () => {
+    const { error } = await supabase
+      .from('messages')
+      .delete()
+      .eq('id', message.id)
+
+    if (error) {
+      console.error('Failed to delete message', error.message)
+      toast.error('Failed to delete message.')
+      return
+    }
+
+    // Filter out message from UI
+  }
 
   return (
     <div
@@ -59,26 +104,54 @@ export const ChatMessageItem = ({
             </span>
           </div>
         )}
-        <div
-          className={cn(
-            'py-2 px-3 rounded-xl text-sm w-fit break-words whitespace-pre-wrap overflow-hidden max-w-full',
-            isOwnMessage
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-muted text-foreground',
-          )}
-        >
-          <Linkify
-            options={{
-              attributes: {
-                target: '_blank',
-                rel: 'noopener noreferrer',
-                className: 'underline text-blue-500 break-all',
-              },
-            }}
-          >
-            {message.content}
-          </Linkify>
-        </div>
+        {isOwnMessage ? (
+          <>
+            <ContextMenu>
+              <ContextMenuTrigger>
+                <ChatBubble
+                  content={message.content}
+                  isOwnMessage={isOwnMessage}
+                />
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuItem className="gap-2" onClick={editMessage}>
+                  <Pencil className="w-4 h-4" />
+                  Edit
+                </ContextMenuItem>
+                <ContextMenuItem
+                  className="gap-2"
+                  onSelect={() => setAlertOpen(true)}
+                >
+                  <Trash2 className="w-4 h-4 text-red-500" />
+                  <span className="text-red-500">Delete</span>
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
+
+            <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Message</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete this message? This action
+                    cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-red-500 hover:bg-red-600"
+                    onClick={deleteMessage}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        ) : (
+          <ChatBubble content={message.content} isOwnMessage={isOwnMessage} />
+        )}
       </div>
     </div>
   )
