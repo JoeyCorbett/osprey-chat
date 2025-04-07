@@ -17,7 +17,6 @@ export default function CourseSearch() {
   const [query, setQuery] = useState('')
   const debouncedQuery = useDebounce(query, 300)
   const containerRef = useRef<HTMLDivElement>(null)
-  
 
   const { data, error, isLoading } = useSWR(
     debouncedQuery.length > 1 ? `/api/courses?q=${debouncedQuery}` : null,
@@ -53,7 +52,6 @@ export default function CourseSearch() {
       </div>
 
       <div ref={containerRef} className="overflow-y-auto pr-2">
-        {/* Loading State */}
         {isLoading && (
           <div className="space-y-2">
             <Skeleton className="h-10 w-full" />
@@ -64,25 +62,19 @@ export default function CourseSearch() {
           </div>
         )}
 
-        {/* Course List */}
         <div className="space-y-3">
           {!isLoading &&
             courses.map((course: Course) => (
-              <CourseCard
-                key={course.id}
-                course={course}
-              />
+              <CourseCard key={course.id} course={course} />
             ))}
         </div>
 
-        {/* Error Handling */}
         {error && (
           <p className="mt-4 text-red-500 text-center">
             Oops, something went wrong. Please try again later.
           </p>
         )}
 
-        {/* No Results */}
         {!isLoading && debouncedQuery.length > 1 && courses.length === 0 && (
           <p className="mt-4 text-gray-500 text-center">No courses found.</p>
         )}

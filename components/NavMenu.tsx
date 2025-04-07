@@ -1,17 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import LogoutButton from '@/components/LogoutButton'
 import MobileMenu from '@/components/MobileMenu'
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { createClient } from '@/utils/supabase/server'
-import { MessageCircle, Search, LogOut } from 'lucide-react'
+import { MessageCircle, Search } from 'lucide-react'
+import LogoutDropdown from '@/components/LogoutDropdown'
 
 export default async function NavMenu() {
   const supabase = await createClient()
@@ -26,7 +18,7 @@ export default async function NavMenu() {
     .toUpperCase()
 
   return (
-    <nav className="relative border-b border-gray-200 bg-white">
+    <nav className="relative border-b border-gray-200">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 md:py-4">
         <Link href="/chats" className="flex items-center space-x-2">
           <Image
@@ -58,21 +50,7 @@ export default async function NavMenu() {
             Search
           </Link>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger className="focus:outline-none">
-              <Avatar className="h-9 w-9 select-none">
-                <AvatarImage src={avatar} />
-                <AvatarFallback>{initials}</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>{name}</DropdownMenuLabel>
-              <DropdownMenuItem>
-                <LogOut />
-                <LogoutButton />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <LogoutDropdown avatar={avatar} name={name} initials={initials} />
         </div>
         <MobileMenu avatar={avatar} name={name} initials={initials} />
       </div>

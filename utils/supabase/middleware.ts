@@ -41,17 +41,16 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
     !request.nextUrl.pathname.startsWith('/auth') &&
     !request.nextUrl.pathname.startsWith('/terms') &&
     !request.nextUrl.pathname.startsWith('/privacy') &&
     request.nextUrl.pathname !== '/'
   ) {
     // no user, potentially respond by redirecting the user to the login page
-    return NextResponse.redirect(new URL('/login', request.url))
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
-  if (user && request.nextUrl.pathname === '/login') {
+  if (user && request.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/chats', request.url))
   }
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
