@@ -7,31 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       course_members: {
@@ -148,60 +123,19 @@ export type Database = {
           content: string
           created_at: string
           id: string
-          type: string
+          room_id: string
           user_id: string
         }
         Insert: {
           content: string
           created_at?: string
           id?: string
-          type: string
+          room_id?: string
           user_id: string
         }
         Update: {
           content?: string
           created_at?: string
-          id?: string
-          type?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "feedback_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      messages: {
-        Row: {
-          content: string | null
-          created_at: string
-          file_name: string | null
-          file_type: string | null
-          file_url: string | null
-          id: string
-          room_id: string
-          user_id: string
-        }
-        Insert: {
-          content?: string | null
-          created_at?: string
-          file_name?: string | null
-          file_type?: string | null
-          file_url?: string | null
-          id?: string
-          room_id?: string
-          user_id: string
-        }
-        Update: {
-          content?: string | null
-          created_at?: string
-          file_name?: string | null
-          file_type?: string | null
-          file_url?: string | null
           id?: string
           room_id?: string
           user_id?: string
