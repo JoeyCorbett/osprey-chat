@@ -4,25 +4,39 @@ import { cn } from '@/lib/utils'
 import { type UseSupabaseUploadReturn } from '@/hooks/use-supabase-upload'
 import { Button } from '@/components/ui/button'
 import { CheckCircle, File, Loader2, Upload, X } from 'lucide-react'
-import { createContext, type PropsWithChildren, useCallback, useContext } from 'react'
+import {
+  createContext,
+  type PropsWithChildren,
+  useCallback,
+  useContext,
+} from 'react'
 
 export const formatBytes = (
   bytes: number,
   decimals = 2,
-  size?: 'bytes' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB' | 'EB' | 'ZB' | 'YB'
+  size?: 'bytes' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB' | 'EB' | 'ZB' | 'YB',
 ) => {
   const k = 1000
   const dm = decimals < 0 ? 0 : decimals
   const sizes = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
 
-  if (bytes === 0 || bytes === undefined) return size !== undefined ? `0 ${size}` : '0 bytes'
-  const i = size !== undefined ? sizes.indexOf(size) : Math.floor(Math.log(bytes) / Math.log(k))
+  if (bytes === 0 || bytes === undefined)
+    return size !== undefined ? `0 ${size}` : '0 bytes'
+  const i =
+    size !== undefined
+      ? sizes.indexOf(size)
+      : Math.floor(Math.log(bytes) / Math.log(k))
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 
-type DropzoneContextType = Omit<UseSupabaseUploadReturn, 'getRootProps' | 'getInputProps'>
+type DropzoneContextType = Omit<
+  UseSupabaseUploadReturn,
+  'getRootProps' | 'getInputProps'
+>
 
-const DropzoneContext = createContext<DropzoneContextType | undefined>(undefined)
+const DropzoneContext = createContext<DropzoneContextType | undefined>(
+  undefined,
+)
 
 type DropzoneProps = UseSupabaseUploadReturn & {
   className?: string
@@ -51,7 +65,7 @@ const Dropzone = ({
             className,
             isSuccess ? 'border-solid' : 'border-dashed',
             isActive && 'border-primary bg-primary/10',
-            isInvalid && 'border-destructive bg-destructive/10'
+            isInvalid && 'border-destructive bg-destructive/10',
           ),
         })}
       >
@@ -80,12 +94,17 @@ const DropzoneContent = ({ className }: { className?: string }) => {
     (fileName: string) => {
       setFiles(files.filter((file) => file.name !== fileName))
     },
-    [files, setFiles]
+    [files, setFiles],
   )
 
   if (isSuccess) {
     return (
-      <div className={cn('flex flex-row items-center gap-x-2 justify-center', className)}>
+      <div
+        className={cn(
+          'flex flex-row items-center gap-x-2 justify-center',
+          className,
+        )}
+      >
         <CheckCircle size={16} className="text-primary" />
         <p className="text-primary text-sm">
           Successfully uploaded {files.length} file{files.length > 1 ? 's' : ''}
@@ -107,7 +126,11 @@ const DropzoneContent = ({ className }: { className?: string }) => {
           >
             {file.type.startsWith('image/') ? (
               <div className="h-10 w-10 rounded border overflow-hidden shrink-0 bg-muted flex items-center justify-center">
-                <img src={file.preview} alt={file.name} className="object-cover" />
+                <img
+                  src={file.preview}
+                  alt={file.name}
+                  className="object-cover"
+                />
               </div>
             ) : (
               <div className="h-10 w-10 rounded border bg-muted flex items-center justify-center">
@@ -124,19 +147,30 @@ const DropzoneContent = ({ className }: { className?: string }) => {
                   {file.errors
                     .map((e) =>
                       e.message.startsWith('File is larger than')
-                        ? `File is larger than ${formatBytes(maxFileSize, 2)} (Size: ${formatBytes(file.size, 2)})`
-                        : e.message
+                        ? `File is larger than ${formatBytes(
+                            maxFileSize,
+                            2,
+                          )} (Size: ${formatBytes(file.size, 2)})`
+                        : e.message,
                     )
                     .join(', ')}
                 </p>
               ) : loading && !isSuccessfullyUploaded ? (
-                <p className="text-xs text-muted-foreground">Uploading file...</p>
+                <p className="text-xs text-muted-foreground">
+                  Uploading file...
+                </p>
               ) : !!fileError ? (
-                <p className="text-xs text-destructive">Failed to upload: {fileError.message}</p>
+                <p className="text-xs text-destructive">
+                  Failed to upload: {fileError.message}
+                </p>
               ) : isSuccessfullyUploaded ? (
-                <p className="text-xs text-primary">Successfully uploaded file</p>
+                <p className="text-xs text-primary">
+                  Successfully uploaded file
+                </p>
               ) : (
-                <p className="text-xs text-muted-foreground">{formatBytes(file.size, 2)}</p>
+                <p className="text-xs text-muted-foreground">
+                  {formatBytes(file.size, 2)}
+                </p>
               )}
             </div>
 
@@ -155,7 +189,8 @@ const DropzoneContent = ({ className }: { className?: string }) => {
       })}
       {exceedMaxFiles && (
         <p className="text-sm text-left mt-2 text-destructive">
-          You may upload only up to {maxFiles} files, please remove {files.length - maxFiles} file
+          You may upload only up to {maxFiles} files, please remove{' '}
+          {files.length - maxFiles} file
           {files.length - maxFiles > 1 ? 's' : ''}.
         </p>
       )}

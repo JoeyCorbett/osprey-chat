@@ -69,22 +69,6 @@ export function useRealtimeChat({
     setupSubscription()
   }, [roomId, userId, supabase])
 
-  const deleteMessage = useCallback(
-    async (id: string) => {
-      const messageToDelete = messages.find((msg) => msg.id === id)
-      setMessages((prev) => prev.filter((msg) => msg.id !== id))
-
-      const error = { message: 'Simulated deletion failure' }
-      
-      if (error && messageToDelete) {
-        setMessages((prev) => [...prev, messageToDelete])
-        console.error('Failed to delete message', error.message)
-        toast.error('Failed to delete message.')
-      }
-    },
-    [supabase, messages],
-  )
-
   const sendMessage = useCallback(
     async (content: string) => {
       if (!channel || !isConnected) return
@@ -138,5 +122,5 @@ export function useRealtimeChat({
     [channel, isConnected, userId, roomId, username, avatar_url, supabase],
   )
 
-  return { messages, sendMessage, isConnected, deleteMessage }
+  return { messages, sendMessage, isConnected }
 }
