@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/client'
 import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 interface UseRealtimeChatProps {
   roomId: string
@@ -68,6 +69,22 @@ export function useRealtimeChat({
     setupSubscription()
   }, [roomId, userId, supabase])
 
+  const deleteMessage = useCallback(
+    async (id: string) => {
+      const messageToDelete = messages.find((msg) => msg.id === id)
+      setMessages((prev) => prev.filter((msg) => msg.id !== id))
+
+      const error = { message: 'Simulated deletion failure' }
+      
+      if (error && messageToDelete) {
+        setMessages((prev) => [...prev, messageToDelete])
+        console.error('Failed to delete message', error.message)
+        toast.error('Failed to delete message.')
+      }
+    },
+    [supabase, messages],
+  )
+
   const sendMessage = useCallback(
     async (content: string) => {
       if (!channel || !isConnected) return
@@ -98,10 +115,15 @@ export function useRealtimeChat({
         })
         if (error) {
           console.error('Error sending message', error.message)
+          toast.error('Error sending message', {
+            position: 'top-right',
+          })
+          // Remove the message from the UI
+          setMessages((current) =>
+            current.filter((msg) => msg.id !== message.id),
+          )
           return
         }
-
-        console.log('Sent message', message)
 
         // Broadcast to other clients
         await channel.send({
@@ -116,5 +138,5 @@ export function useRealtimeChat({
     [channel, isConnected, userId, roomId, username, avatar_url, supabase],
   )
 
-  return { messages, sendMessage, isConnected }
+  return { messages, sendMessage, isConnected, deleteMessage }
 }

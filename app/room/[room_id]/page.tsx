@@ -5,6 +5,37 @@ import { createClient } from '@/utils/supabase/server'
 import { PostgrestError } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import ChatPage from '@/components/ChatPage'
+import { Metadata } from 'next'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ room_id: string }>
+}): Promise<Metadata> {
+  type MetaDataRoom = {
+    sections: {
+      courses: {
+        code: string
+      }
+    }
+  }
+  const { room_id } = await params
+
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('course_rooms')
+    .select('sections ( courses ( code))')
+    .eq('id', room_id)
+    .single()
+
+  const room = data as unknown as MetaDataRoom
+
+  const courseName = room?.sections?.courses?.code ?? 'Unknown Course'
+
+  return {
+    title: courseName,
+  }
+}
 
 interface Course {
   id: string
@@ -59,7 +90,7 @@ export default async function RoomPage({
     .single()) as { data: Room | null; error: PostgrestError | null }
 
   if (error || !room) {
-    console.error('Error fetching room',error)
+    console.error('Error fetching room', error)
     redirect('/chats')
   }
 

@@ -1,4 +1,9 @@
+import { Metadata } from 'next'
 import CourseSearch from '@/components/CourseSearch'
+
+export const metadata: Metadata = {
+  title: 'Search',
+}
 
 export default async function Search() {
   return (

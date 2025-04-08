@@ -1,5 +1,10 @@
 import MyCourses from '@/components/MyCourses'
 import { FeedbackDialog } from '@/components/FeedbackDialog'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Chats',
+}
 
 export default async function Chats() {
   return (

@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Send } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import DropZoneModal from '@/components/DropZoneModal'
+import React from 'react'
 
 interface ChatInputProps {
   isConnected: boolean
@@ -17,6 +18,7 @@ export function ChatInput({
   onSendMessageAction,
 }: ChatInputProps) {
   const [message, setMessage] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,7 +28,13 @@ export function ChatInput({
     setMessage('')
   }
 
-  return (
+  useEffect(() => {
+    if (isConnected) {
+      inputRef.current?.focus()
+    }
+  }, [isConnected])
+
+  return (  
     <div className="border-t border">
       <form
         onSubmit={handleSubmit}
@@ -35,6 +43,7 @@ export function ChatInput({
         <div className="flex items-center gap-2 flex-1">
           <DropZoneModal isConnected={isConnected} />
           <Input
+            ref={inputRef}
             className={cn(
               'rounded-full py-5 bg-background text-sm transition-all duration-300',
               isConnected && message.trim() ? 'w-[calc(100%-36px)]' : 'w-full',

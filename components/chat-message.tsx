@@ -19,7 +19,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { toast } from 'sonner'
-import { createClient } from '@/utils/supabase/client'
 import { useState } from 'react'
 import ChatBubble from '@/components/ChatBubble'
 
@@ -27,16 +26,16 @@ interface ChatMessageItemProps {
   message: ChatMessage
   isOwnMessage: boolean
   showHeader: boolean
+  onDelete?: () => void
 }
 
 export const ChatMessageItem = ({
   message,
   isOwnMessage,
   showHeader,
+  onDelete,
 }: ChatMessageItemProps) => {
   const [alertOpen, setAlertOpen] = useState(false)
-
-  const supabase = createClient()
 
   const initials = message.profiles.username
     .split(' ')
@@ -48,21 +47,6 @@ export const ChatMessageItem = ({
     toast.info('Edit feature coming soon!', {
       position: 'top-right',
     })
-  }
-
-  const deleteMessage = async () => {
-    const { error } = await supabase
-      .from('messages')
-      .delete()
-      .eq('id', message.id)
-
-    if (error) {
-      console.error('Failed to delete message', error.message)
-      toast.error('Failed to delete message.')
-      return
-    }
-
-    // Filter out message from UI
   }
 
   return (
@@ -141,7 +125,7 @@ export const ChatMessageItem = ({
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-red-500 hover:bg-red-600"
-                    onClick={deleteMessage}
+                    onClick={() => onDelete?.()}
                   >
                     Delete
                   </AlertDialogAction>
