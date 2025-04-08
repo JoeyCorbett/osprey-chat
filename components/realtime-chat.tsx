@@ -44,6 +44,7 @@ export const RealtimeChat = ({
     messages: realtimeMessages,
     sendMessage,
     isConnected,
+    deleteMessage,
   } = useRealtimeChat({
     roomId,
     userId,
@@ -100,6 +101,7 @@ export const RealtimeChat = ({
                   message={message}
                   isOwnMessage={message.user_id === userId}
                   showHeader={showHeader}
+                  onDelete={() => deleteMessage(message.id)}
                 />
               </div>
             )

@@ -17,7 +17,10 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Osprey Chat',
+  title: {
+    default: 'Osprey Chat',
+    template: '%s | Osprey Chat',
+  },
   description:
     'Real-time course-based chat app for Stockton University students',
   icons: {

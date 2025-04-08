@@ -1,3 +1,9 @@
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+}
+
 export default function TermsPage() {
   return (
     <div className="max-w-2xl mx-auto p-6">
