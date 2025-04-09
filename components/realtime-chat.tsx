@@ -55,6 +55,25 @@ export const RealtimeChat = ({
     avatar_url,
   })
 
+  const editMessage = async (id: string, content: string) => {
+    const { error } = await supabase
+      .from('messages')
+      .update({ content })
+      .eq('id', id)
+
+    if (error) {
+      console.error('Failed to update message', error.message)
+      toast.error('Failed to delete message', {
+        position: 'top-right',
+      })
+      return
+    }
+
+    setAllMessages((messages) =>
+      messages.map((msg) => (msg.id === id ? { ...msg, content } : msg)),
+    )
+  }
+
   const deleteMessage = async (id: string) => {
     const { error } = await supabase.from('messages').delete().eq('id', id)
 
@@ -117,6 +136,7 @@ export const RealtimeChat = ({
                   isOwnMessage={message.user_id === userId}
                   showHeader={showHeader}
                   onDelete={() => deleteMessage(message.id)}
+                  onEdit={editMessage}
                 />
               </div>
             )
