@@ -17,7 +17,7 @@ interface EditMessageDialogProps {
   setEditOpen: React.Dispatch<React.SetStateAction<boolean>>
   messageContent: string
   messageId: string
-  editMessage: (id: string, content: string) => Promise<void>
+  editMessage: (id: string, content: string) => void
 }
 
 export const EditMessageDialog = ({
