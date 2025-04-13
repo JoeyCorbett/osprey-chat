@@ -5,10 +5,8 @@ import { useChatScroll } from '@/hooks/use-chat-scroll'
 import { type ChatMessage, useRealtimeChat } from '@/hooks/use-realtime-chat'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, MessageCircle } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { ChatInput } from '@/components/chat-input'
-import { createClient } from '@/utils/supabase/client'
-import { toast } from 'sonner'
 
 interface RealtimeChatProps {
   roomId: string
@@ -35,8 +33,6 @@ export const RealtimeChat = ({
   messages: initialMessages = [],
 }: RealtimeChatProps) => {
   const { containerRef, scrollToBottom, isUserAtBottom } = useChatScroll()
-  const [allMessages, setAllMessages] = useState<ChatMessage[]>([])
-  const supabase = createClient()
 
   useEffect(() => {
     if (isUserAtBottom) {
@@ -45,62 +41,18 @@ export const RealtimeChat = ({
   }, [isUserAtBottom, scrollToBottom])
 
   const {
-    messages: realtimeMessages,
-    sendMessage,
+    messages: allMessages,
     isConnected,
+    sendMessage,
+    deleteMessage,
+    editMessage,
   } = useRealtimeChat({
     roomId,
     userId,
     username,
     avatar_url,
+    initialMessages,
   })
-
-  const editMessage = async (id: string, content: string) => {
-    const { error } = await supabase
-      .from('messages')
-      .update({ content })
-      .eq('id', id)
-
-    if (error) {
-      console.error('Failed to update message', error.message)
-      toast.error('Failed to delete message', {
-        position: 'top-right',
-      })
-      return
-    }
-
-    setAllMessages((messages) =>
-      messages.map((msg) => (msg.id === id ? { ...msg, content } : msg)),
-    )
-  }
-
-  const deleteMessage = async (id: string) => {
-    const { error } = await supabase.from('messages').delete().eq('id', id)
-
-    if (error) {
-      console.error('Failed to delete message', error.message)
-      toast.error('Failed to delete message.', {
-        position: 'top-right',
-      })
-      return
-    }
-
-    setAllMessages((prev) => prev.filter((msg) => msg.id !== id))
-  }
-
-  useEffect(() => {
-    const messageMap = new Map<string, ChatMessage>()
-
-    initialMessages.forEach((msg) => messageMap.set(msg.id, msg))
-    realtimeMessages.forEach((msg) => messageMap.set(msg.id, msg))
-
-    // Convert back to array and sort
-    const sorted = Array.from(messageMap.values()).sort((a, b) =>
-      a.created_at.localeCompare(b.created_at),
-    )
-
-    setAllMessages(sorted)
-  }, [realtimeMessages, initialMessages])
 
   useEffect(() => {
     // Scroll to bottom whenever messages change

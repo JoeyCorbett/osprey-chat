@@ -11,7 +11,7 @@ export function useMessagesQuery(roomId: string) {
       const { data, error } = await supabase
         .from('messages')
         .select(
-          'id, content, created_at, user_id, room_id, profiles(username, avatar_url)',
+          'id, content, created_at, edited_at, user_id, room_id, profiles(username, avatar_url)',
         )
         .eq('room_id', roomId)
         .order('created_at', { ascending: true })

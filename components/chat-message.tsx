@@ -17,7 +17,7 @@ export const ChatMessageItem = ({
   isOwnMessage,
   showHeader,
   onDelete,
-  onEdit
+  onEdit,
 }: ChatMessageItemProps) => {
   const initials = message.profiles.username
     .split(' ')
@@ -25,6 +25,8 @@ export const ChatMessageItem = ({
     .join('')
     ?.toUpperCase()
 
+  const isEdited = Boolean(message.edited_at)
+  
   return (
     <div
       className={cn(
@@ -69,10 +71,15 @@ export const ChatMessageItem = ({
             message={message}
             isOwnMessage={isOwnMessage}
             onEdit={onEdit}
-            onDelete={onDelete ?? (() => {})}
+            onDelete={() => onDelete?.()}
+            edited={isEdited}
           />
         ) : (
-          <ChatBubble content={message.content} isOwnMessage={isOwnMessage} />
+          <ChatBubble
+            content={message.content}
+            isOwnMessage={isOwnMessage}
+            edited={isEdited}
+          />
         )}
       </div>
     </div>
