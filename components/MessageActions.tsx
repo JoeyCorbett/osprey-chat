@@ -25,7 +25,6 @@ interface MessageActionProps {
   isOwnMessage: boolean
   onEdit: (id: string, content: string) => void
   onDelete: () => void
-  edited: boolean
 }
 
 export const MessageActions = ({
@@ -33,7 +32,6 @@ export const MessageActions = ({
   isOwnMessage,
   onEdit,
   onDelete,
-  edited,
 }: MessageActionProps) => {
   const [alertOpen, setAlertOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
@@ -42,11 +40,7 @@ export const MessageActions = ({
     <>
       <ContextMenu>
         <ContextMenuTrigger>
-          <ChatBubble
-            content={message.content}
-            isOwnMessage={isOwnMessage}
-            edited={edited}
-          />
+          <ChatBubble content={message.content} isOwnMessage={isOwnMessage} />
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem className="gap-2" onClick={() => setEditOpen(true)}>

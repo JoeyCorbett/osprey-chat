@@ -4,14 +4,9 @@ import { cn } from '@/lib/utils'
 interface ChatBubbleProps {
   content: string
   isOwnMessage: boolean
-  edited: boolean
 }
 
-export default function ChatBubble({
-  content,
-  isOwnMessage,
-  edited,
-}: ChatBubbleProps) {
+export default function ChatBubble({ content, isOwnMessage }: ChatBubbleProps) {
   return (
     <>
       <div
@@ -34,11 +29,6 @@ export default function ChatBubble({
           {content}
         </Linkify>
       </div>
-      {edited && (
-        <div className="text-xs text-muted-foreground italic mt-1 text-right">
-          (edited)
-        </div>
-      )}
     </>
   )
 }

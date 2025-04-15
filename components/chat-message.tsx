@@ -26,7 +26,7 @@ export const ChatMessageItem = ({
     ?.toUpperCase()
 
   const isEdited = Boolean(message.edited_at)
-  
+
   return (
     <div
       className={cn(
@@ -37,7 +37,7 @@ export const ChatMessageItem = ({
       {showHeader && (
         <Avatar
           className={cn(
-            'w-8 h-8 mt-auto',
+            'w-8 h-8 mt-[22px]',
             isOwnMessage ? 'order-2 ml-2' : 'mr-2',
           )}
         >
@@ -72,14 +72,20 @@ export const ChatMessageItem = ({
             isOwnMessage={isOwnMessage}
             onEdit={onEdit}
             onDelete={() => onDelete?.()}
-            edited={isEdited}
           />
         ) : (
-          <ChatBubble
-            content={message.content}
-            isOwnMessage={isOwnMessage}
-            edited={isEdited}
-          />
+          <ChatBubble content={message.content} isOwnMessage={isOwnMessage} />
+        )}
+
+        {isEdited && (
+          <div
+            className={cn(
+              'text-xs text-muted-foreground italic mt-1',
+              isOwnMessage ? 'text-right' : 'text-left',
+            )}
+          >
+            (edited)
+          </div>
         )}
       </div>
     </div>

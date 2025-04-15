@@ -38,7 +38,7 @@ export function useRealtimeChat({
     typeof supabase.channel
   > | null>(null)
   const [isConnected, setIsConnected] = useState(false)
-
+  
   // Setup Subscription for all event types
   useEffect(() => {
     const setupSubscription = async () => {
