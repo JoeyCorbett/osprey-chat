@@ -16,6 +16,10 @@ export default function ChatBubble({ content, isOwnMessage }: ChatBubbleProps) {
             ? 'bg-primary text-primary-foreground'
             : 'bg-muted text-foreground',
         )}
+        style={{
+          WebkitUserSelect: 'none',
+          userSelect: 'none',
+        }}
       >
         <Linkify
           options={{
