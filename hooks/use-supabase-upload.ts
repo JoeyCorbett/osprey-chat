@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { type FileError, type FileRejection, useDropzone } from 'react-dropzone'
+import { v4 as uuidv4 } from 'uuid'
 
 const supabase = createClient()
 
@@ -98,13 +99,16 @@ const useSupabaseUpload = (options: UseSupabaseUploadOptions) => {
 
       setFiles(newFiles)
     },
-    [files, setFiles]
+    [files, setFiles],
   )
 
   const dropzoneProps = useDropzone({
     onDrop,
     noClick: true,
-    accept: allowedMimeTypes.reduce((acc, type) => ({ ...acc, [type]: [] }), {}),
+    accept: allowedMimeTypes.reduce(
+      (acc, type) => ({ ...acc, [type]: [] }),
+      {},
+    ),
     maxSize: maxFileSize,
     maxFiles: maxFiles,
     multiple: maxFiles !== 1,
@@ -113,7 +117,6 @@ const useSupabaseUpload = (options: UseSupabaseUploadOptions) => {
   const onUpload = useCallback(async () => {
     setLoading(true)
 
-    // [Joshen] This is to support handling partial successes
     // If any files didn't upload for any reason, hitting "Upload" again will only upload the files that had errors
     const filesWithErrors = errors.map((x) => x.name)
     const filesToUpload =
@@ -126,9 +129,11 @@ const useSupabaseUpload = (options: UseSupabaseUploadOptions) => {
 
     const responses = await Promise.all(
       filesToUpload.map(async (file) => {
+        const uniqueFileName = `${uuidv4()}-${file.name}`
+
         const { error } = await supabase.storage
           .from(bucketName)
-          .upload(!!path ? `${path}/${file.name}` : file.name, file, {
+          .upload(!!path ? `${path}/${uniqueFileName}` : file.name, file, {
             cacheControl: cacheControl.toString(),
             upsert,
           })
@@ -137,7 +142,7 @@ const useSupabaseUpload = (options: UseSupabaseUploadOptions) => {
         } else {
           return { name: file.name, message: undefined }
         }
-      })
+      }),
     )
 
     const responseErrors = responses.filter((x) => x.message !== undefined)
@@ -146,7 +151,7 @@ const useSupabaseUpload = (options: UseSupabaseUploadOptions) => {
 
     const responseSuccesses = responses.filter((x) => x.message === undefined)
     const newSuccesses = Array.from(
-      new Set([...successes, ...responseSuccesses.map((x) => x.name)])
+      new Set([...successes, ...responseSuccesses.map((x) => x.name)]),
     )
     setSuccesses(newSuccesses)
 
@@ -191,4 +196,8 @@ const useSupabaseUpload = (options: UseSupabaseUploadOptions) => {
   }
 }
 
-export { useSupabaseUpload, type UseSupabaseUploadOptions, type UseSupabaseUploadReturn }
+export {
+  useSupabaseUpload,
+  type UseSupabaseUploadOptions,
+  type UseSupabaseUploadReturn,
+}

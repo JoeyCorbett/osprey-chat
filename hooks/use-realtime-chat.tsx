@@ -9,6 +9,7 @@ interface UseRealtimeChatProps {
   userId: string
   username: string
   avatar_url: string
+  initialMessages: ChatMessage[]
 }
 
 export interface ChatMessage {
@@ -20,25 +21,25 @@ export interface ChatMessage {
     username: string
     avatar_url: string
   }
+  edited_at: string | null
   created_at: string
 }
-
-const EVENT_MESSAGE_TYPE = 'message'
 
 export function useRealtimeChat({
   roomId,
   userId,
   username,
   avatar_url,
+  initialMessages,
 }: UseRealtimeChatProps) {
   const supabase = createClient()
-
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages ?? [])
   const [channel, setChannel] = useState<ReturnType<
     typeof supabase.channel
   > | null>(null)
   const [isConnected, setIsConnected] = useState(false)
-
+  
+  // Setup Subscription for all event types
   useEffect(() => {
     const setupSubscription = async () => {
       await supabase.realtime.setAuth()
@@ -50,13 +51,32 @@ export function useRealtimeChat({
       })
 
       newChannel
-        .on('broadcast', { event: EVENT_MESSAGE_TYPE }, (payload) => {
-          setMessages((current) => [...current, payload.payload as ChatMessage])
+        .on('broadcast', { event: 'message' }, (payload) => {
+          const newMessage = payload.payload as ChatMessage
+          setMessages((current) =>
+            current.some((msg) => msg.id === newMessage.id)
+              ? current
+              : [...current, newMessage].sort((a, b) =>
+                  a.created_at.localeCompare(b.created_at),
+                ),
+          )
+        })
+        .on('broadcast', { event: 'message_updated' }, (payload) => {
+          const updatedMessage = payload.payload as ChatMessage
+          setMessages((current) =>
+            current.map((msg) =>
+              msg.id === updatedMessage.id ? updatedMessage : msg,
+            ),
+          )
+        })
+        .on('broadcast', { event: 'message_deleted' }, (payload) => {
+          const { messageId } = payload.payload
+          setMessages((current) =>
+            current.filter((msg) => msg.id !== messageId),
+          )
         })
         .subscribe(async (status) => {
-          if (status === 'SUBSCRIBED') {
-            setIsConnected(true)
-          }
+          if (status === 'SUBSCRIBED') setIsConnected(true)
         })
 
       setChannel(newChannel)
@@ -67,7 +87,7 @@ export function useRealtimeChat({
     }
 
     setupSubscription()
-  }, [roomId, userId, supabase])
+  }, [roomId, supabase])
 
   const sendMessage = useCallback(
     async (content: string) => {
@@ -82,45 +102,119 @@ export function useRealtimeChat({
           username,
           avatar_url,
         },
+        edited_at: null,
         created_at: new Date().toISOString(),
       }
 
-      // Update local state immediately for the sender
+      // optimistic update
       setMessages((current) => [...current, message])
 
       try {
         // Insert into database
         const { error } = await supabase.from('messages').insert({
           id: message.id,
-          content: message.content,
-          room_id: message.room_id,
-          user_id: message.user_id,
+          content,
+          room_id: roomId,
+          user_id: userId,
           created_at: message.created_at,
         })
-        if (error) {
-          console.error('Error sending message', error.message)
-          toast.error('Error sending message', {
-            position: 'top-right',
-          })
-          // Remove the message from the UI
-          setMessages((current) =>
-            current.filter((msg) => msg.id !== message.id),
-          )
-          return
-        }
+        if (error) throw error
 
         // Broadcast to other clients
         await channel.send({
           type: 'broadcast',
-          event: EVENT_MESSAGE_TYPE,
+          event: 'message',
           payload: message,
         })
-      } catch (err) {
-        console.error('sendMessage failed', err)
+      } catch (error) {
+        console.error('Error sending message', error)
+        toast.error('Failed to send message')
+        // rollback
+        setMessages((current) => current.filter((msg) => msg.id !== message.id))
       }
     },
     [channel, isConnected, userId, roomId, username, avatar_url, supabase],
   )
 
-  return { messages, sendMessage, isConnected }
+  const editMessage = useCallback(
+    async (id: string, content: string) => {
+      if (!channel || !isConnected) return
+
+      const originalMessage = messages.find((msg) => msg.id === id)
+
+      if (!originalMessage) {
+        console.error('Message not found')
+        toast.error('Message not found')
+        return
+      }
+
+      const timestamp = new Date().toISOString()
+      setMessages((current) =>
+        current.map((msg) =>
+          msg.id === id ? { ...msg, content, edited_at: timestamp } : msg,
+        ),
+      )
+
+      try {
+        const { data, error } = await supabase
+          .from('messages')
+          .update({ content, edited_at: timestamp })
+          .eq('id', id)
+          .select()
+          .single()
+        if (error) throw error
+
+        await channel.send({
+          type: 'broadcast',
+          event: 'message_updated',
+          payload: data,
+        })
+      } catch (error) {
+        console.error('Error editing message:', error)
+        toast.error('Failed to edit message')
+        setMessages((current) =>
+          current.map((msg) => (msg.id === id ? originalMessage : msg)),
+        )
+      }
+    },
+    [isConnected, supabase, channel, messages],
+  )
+
+  const deleteMessage = useCallback(
+    async (id: string) => {
+      if (!channel || !isConnected) return
+
+      const deletedMessage = messages.find((msg) => msg.id === id)
+      if (!deletedMessage) return
+
+      setMessages((current) => current.filter((msg) => msg.id !== id))
+
+      try {
+        const { error } = await supabase.from('messages').delete().eq('id', id)
+        if (error) throw error
+
+        await channel.send({
+          type: 'broadcast',
+          event: 'message_deleted',
+          payload: { messageId: id },
+        })
+      } catch (error) {
+        console.error('Error deleting message:', error)
+        toast.error('Failed to delete message', {
+          position: 'top-right',
+        })
+        // More efficient rollback
+        setMessages((current) => {
+          const messageExists = current.some((msg) => msg.id === id)
+          if (messageExists) return current
+          return [...current, deletedMessage].sort((a, b) =>
+            a.created_at.localeCompare(b.created_at),
+          )
+        })
+      }
+    },
+    [channel, isConnected, messages, supabase],
+  )
+
+  return { messages, sendMessage, isConnected, deleteMessage, editMessage }
 }
