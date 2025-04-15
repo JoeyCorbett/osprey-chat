@@ -11,7 +11,7 @@ export default function ChatBubble({ content, isOwnMessage }: ChatBubbleProps) {
     <>
       <div
         className={cn(
-          'py-2 px-3 rounded-xl text-sm w-fit break-words whitespace-pre-wrap overflow-hidden max-w-full',
+          'py-2 px-3 rounded-xl text-sm w-fit break-words whitespace-pre-wrap overflow-hidden max-w-full select-none md:select-auto',
           isOwnMessage
             ? 'bg-primary text-primary-foreground'
             : 'bg-muted text-foreground',
