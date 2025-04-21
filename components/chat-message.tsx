@@ -3,6 +3,7 @@ import type { ChatMessage } from '@/hooks/use-realtime-chat'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import ChatBubble from '@/components/ChatBubble'
 import { MessageActions } from '@/components/MessageActions'
+import { formatChatDate } from '@/utils/formatChatDate'
 
 interface ChatMessageItemProps {
   message: ChatMessage
@@ -58,11 +59,7 @@ export const ChatMessageItem = ({
           >
             <span className={'font-medium'}>{message.profiles.username}</span>
             <span className="text-foreground/50 text-xs">
-              {new Date(message.created_at).toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true,
-              })}
+              {formatChatDate(message.created_at)}
             </span>
           </div>
         )}
