@@ -81,7 +81,7 @@ export default function CourseActions({ roomId }: CourseActionsProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="hover:bg-accent transition rounded-full"
+            className="hover:bg-accent transition rounded-full -m-1.5"
           >
             <EllipsisVertical className="h-5 w-5 text-muted-foreground" />
           </Button>
