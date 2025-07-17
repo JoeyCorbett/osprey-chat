@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Menu, X, MessageCircle, Search, LogOut, Moon, Sun, Palette } from 'lucide-react'
+import { Menu, X, MessageCircle, Search, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { useLogout } from '@/hooks/useLogout'
