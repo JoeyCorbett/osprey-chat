@@ -32,13 +32,13 @@ export default function CourseSearch() {
   return (
     <div className="max-w-xl mx-auto p-6">
       <div className="flex items-center justify-center gap-2 mb-6">
-        <Search className="w-6 h-6 text-gray-900" />
-        <h1 className="text-2xl font-bold text-gray-900">Search for Courses</h1>
+        <Search className="w-6 h-6 text-foreground" />
+        <h1 className="text-2xl font-bold text-foreground">Search for Courses</h1>
       </div>
 
       <div className="relative w-full mb-6">
         <Search
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
           size={22}
         />
         <Input
@@ -47,7 +47,7 @@ export default function CourseSearch() {
           value={query}
           onChange={handleChange}
           placeholder="Search by code or title..."
-          className="w-full rounded-lg border border-gray-300 bg-gray-50 px-12 py-3 text-base focus:border-gray-600 focus:ring-2 focus:ring-gray-400 transition shadow-sm"
+          className="w-full rounded-[var(--radius)] border bg-input px-12 py-3 text-base focus:border-ring focus:ring-2 focus:ring-ring-50 transition shadow-sm"
         />
       </div>
 
@@ -70,13 +70,13 @@ export default function CourseSearch() {
         </div>
 
         {error && (
-          <p className="mt-4 text-red-500 text-center">
+          <p className="mt-4 text-destructive text-center">
             Oops, something went wrong. Please try again later.
           </p>
         )}
 
         {!isLoading && debouncedQuery.length > 1 && courses.length === 0 && (
-          <p className="mt-4 text-gray-500 text-center">No courses found.</p>
+          <p className="mt-4 text-muted-foreground text-center">No courses found.</p>
         )}
       </div>
     </div>

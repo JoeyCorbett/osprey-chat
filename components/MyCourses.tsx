@@ -21,8 +21,8 @@ export default function MyCourses() {
     return (
       <div className="max-w-2xl mx-auto p-6">
         <div className="flex items-center justify-center gap-2 mb-10">
-          <MessageCircle className="w-6 h-6 text-gray-900" />
-          <h1 className="text-2xl font-bold text-gray-900">Course Chats</h1>
+          <MessageCircle className="w-6 h-6 text-foreground" />
+          <h1 className="text-2xl font-bold text-foreground">Course Chats</h1>
         </div>
 
         <div className="space-y-3">
@@ -40,20 +40,20 @@ export default function MyCourses() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="flex items-center justify-center gap-2 mb-10">
-        <MessageCircle className="w-6 h-6 text-gray-900" />
-        <h1 className="text-2xl font-bold text-gray-900">Course Chats</h1>
+        <MessageCircle className="w-6 h-6 text-foreground" />
+        <h1 className="text-2xl font-bold text-foreground">Course Chats</h1>
       </div>
 
       {error && (
-        <p className="text-red-500 text-center">Failed to load courses.</p>
+        <p className="text-destructive text-center">Failed to load courses.</p>
       )}
 
       {courseRooms && courseRooms.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-foreground">
             You&apos;re not in any courses yet
           </h2>
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             Join a course to start chatting with your classmates instantly.
           </p>
           <Button className="m-4" onClick={() => router.push('/search')}>

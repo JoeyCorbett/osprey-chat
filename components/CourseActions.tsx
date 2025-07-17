@@ -20,7 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 
 type course_members = Database['public']['Tables']['course_members']['Row']
 
@@ -81,15 +81,15 @@ export default function CourseActions({ roomId }: CourseActionsProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="hover:bg-gray-100 transition rounded-full"
+            className="hover:bg-accent transition rounded-full"
           >
-            <EllipsisVertical className="h-5 w-5 text-gray-600" />
+            <EllipsisVertical className="h-5 w-5 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40">
           <DropdownMenuItem
             onClick={() => setIsOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 hover:bg-red-50 transition rounded-md"
+            className="flex items-center gap-2 px-4 py-2 hover:bg-destructive/10 text-destructive hover:text-destructive focus:text-destructive transition rounded-[var(--radius)]"
           >
             <LogOut size={16} />
             Leave Course
@@ -111,7 +111,10 @@ export default function CourseActions({ roomId }: CourseActionsProps) {
             <AlertDialogCancel onClick={() => setIsOpen(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleLeave}>
+            <AlertDialogAction 
+              onClick={handleLeave}
+              className={`${buttonVariants({ variant: "destructive" })} hover:opacity-90 transition-opacity`} // TODO: Fix this workaround for button hover styles
+            >
               Leave Course
             </AlertDialogAction>
           </AlertDialogFooter>
