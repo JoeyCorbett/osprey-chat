@@ -4,6 +4,7 @@ import MobileMenu from '@/components/MobileMenu'
 import { createClient } from '@/utils/supabase/server'
 import { MessageCircle, Search } from 'lucide-react'
 import LogoutDropdown from '@/components/LogoutDropdown'
+import { ModeToggle } from './ModeToggle'
 
 export default async function NavMenu() {
   const supabase = await createClient()
@@ -49,7 +50,7 @@ export default async function NavMenu() {
             <Search size={20} className="text-gray-600" />
             Search
           </Link>
-
+          <ModeToggle />
           <LogoutDropdown avatar={avatar} name={name} initials={initials} />
         </div>
         <MobileMenu avatar={avatar} name={name} initials={initials} />
