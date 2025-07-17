@@ -50,7 +50,7 @@ export default function CourseList({ initialCourses }: CourseListProps) {
             key={course.room_id}
           >
             <CardContent className="p-4">
-              <div className="flex justify-between items-start mb-3">
+              <div className="flex justify-between items-center mb-3">
                 <div className="flex items-center space-x-2">
                   <span className="bg-secondary text-secondary-foreground font-medium rounded-[var(--radius)] px-2 py-1 text-sm">
                     {courseInfo.code}
