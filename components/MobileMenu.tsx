@@ -3,15 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X, MessageCircle, Search, LogOut, Moon, Sun, Palette } from 'lucide-react'
-import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { useLogout } from '@/hooks/useLogout'
 import { ModeToggle } from './ModeToggle'
 
@@ -27,7 +20,6 @@ export default function MobileMenu({
   name,
 }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { setTheme } = useTheme()
   const logout = useLogout()
 
   return (
