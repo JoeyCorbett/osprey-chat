@@ -19,7 +19,7 @@ export default async function NavMenu() {
     .toUpperCase()
 
   return (
-    <nav className="relative border-b border-gray-200">
+    <nav className="relative border-b border-border">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 md:py-4">
         <Link href="/chats" className="flex items-center space-x-2">
           <Image
@@ -30,24 +30,24 @@ export default async function NavMenu() {
             className="cursor-pointer"
             priority
           />
-          <span className="text-lg font-semibold text-gray-900">
+          <span className="text-lg font-semibold text-foreground">
             Osprey Chat
           </span>
         </Link>
         <div className="hidden md:flex md:items-center md:space-x-5">
           <Link
             href="/chats"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 rounded-md transition"
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground hover:bg-accent rounded-[var(--radius)] transition"
           >
-            <MessageCircle size={20} className="text-gray-600" />
+            <MessageCircle size={20} className="text-muted-foreground" />
             Chats
           </Link>
 
           <Link
             href="/search"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 rounded-md transition"
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground hover:bg-accent rounded-[var(--radius)] transition"
           >
-            <Search size={20} className="text-gray-600" />
+            <Search size={20} className="text-muted-foreground" />
             Search
           </Link>
           <ModeToggle />
