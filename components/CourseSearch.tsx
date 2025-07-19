@@ -47,7 +47,7 @@ export default function CourseSearch() {
           value={query}
           onChange={handleChange}
           placeholder="Search by code or title..."
-          className="w-full rounded-[var(--radius)] border bg-input px-12 py-3 text-base focus:border-ring focus:ring-2 focus:ring-ring-50 transition shadow-sm"
+          className="w-full rounded-[var(--radius)] border bg-input px-12 py-3 text-base hover:border-ring focus:border-border hover:focus:border-border transition shadow-sm"
         />
       </div>
 
