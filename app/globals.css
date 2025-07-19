@@ -40,6 +40,7 @@ body {
     --sidebar-accent-foreground: hsl(0 0% 0%);
     --sidebar-border: hsl(223.8136 0.0001% 92.1478%);
     --sidebar-ring: hsl(0 0% 0%);
+    --sidebar-background: hsl(223.8136 0.0005% 98.6829%);
     --font-sans: Geist, sans-serif;
     --font-serif: Georgia, serif;
     --font-mono: Geist Mono, monospace;
@@ -87,13 +88,14 @@ body {
     --chart-4: hsl(223.8136 0% 32.3067%);
     --chart-5: hsl(223.8136 0.0001% 89.5577%);
     --sidebar: hsl(223.8136 0% 6.8692%);
-    --sidebar-foreground: hsl(223.8136 -172.5242% 100%);
-    --sidebar-primary: hsl(223.8136 -172.5242% 100%);
-    --sidebar-primary-foreground: hsl(0 0% 0%);
-    --sidebar-accent: hsl(223.8136 0% 19.8916%);
-    --sidebar-accent-foreground: hsl(223.8136 -172.5242% 100%);
-    --sidebar-border: hsl(223.8136 0% 19.8916%);
-    --sidebar-ring: hsl(223.8136 0% 64.471%);
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: hsl(223.8136 0.0005% 98.6829%);
     --font-sans: Geist, sans-serif;
     --font-serif: Georgia, serif;
     --font-mono: Geist Mono, monospace;
@@ -255,5 +257,16 @@ body {
     -ms-user-select: none;
     touch-action: none;
     -webkit-touch-callout: none;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
