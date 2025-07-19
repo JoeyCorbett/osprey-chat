@@ -1,11 +1,14 @@
-import NavMenu from '@/components/NavMenu'
-import { ReactNode } from 'react';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import SettingsNav from "@/components/SettingsNav"
 
-export default function SettingsLayout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <NavMenu />
-      <main>{children}</main>
-    </>
+    <SidebarProvider>
+      <SettingsNav />
+      <main>
+        <SidebarTrigger />
+        {children}
+      </main>
+    </SidebarProvider>
   )
 }
