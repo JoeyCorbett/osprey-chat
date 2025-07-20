@@ -6,7 +6,6 @@ import { Menu, X, MessageCircle, Search, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { useLogout } from '@/hooks/useLogout'
-import { ModeToggle } from './ModeToggle'
 
 interface MobileMenuProps {
   avatar: string
@@ -55,13 +54,6 @@ export default function MobileMenu({
             <Search size={20} className="text-muted-foreground" />
             Search
           </Link>
-
-          <div className="flex items-center justify-center text-center gap-2 w-full px-4 py-3 rounded-md text-foreground font-medium hover:bg-accent transition">
-            
-            <span className="flex items-center gap-2">
-              <ModeToggle /> {/* TODO: Better implementation of this: either a separate ModeToggle for mobile, or integrate it into a settings menu */}
-            </span>
-          </div>
 
           {/* Profile Section in a Row */}
           <div className="flex items-center justify-center gap-3 px-4 py-3 border-t border-border">
