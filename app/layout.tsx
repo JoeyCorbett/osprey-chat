@@ -43,7 +43,7 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange={false}
-          themes={['light', 'dark', 'cosmic-day', 'cosmic-night', 'system']}
+          themes={['light', 'dark', 'cosmic-night-light', 'cosmic-night-dark', 'system']}
         >
           <ReactQueryProvider>{children}</ReactQueryProvider>
           <Toaster closeButton />
