@@ -59,33 +59,33 @@ export default function RoomUsersPopover({ roomId }: RoomUsersPopoverProps) {
     <Popover>
       <PopoverTrigger asChild>
         <button
-          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+          className="p-2 rounded-[var(--radius)] hover:bg-accent transition-colors"
           aria-label="Show room users"
         >
-          <Users className="w-6 h-6 text-gray-600" />
+          <Users className="w-6 h-6 text-muted-foreground" />
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end">
         <div className="px-4 py-3 border-b">
           <h3 className="font-medium text-sm">People in this room</h3>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             {users.length} {users.length === 1 ? 'person' : 'people'}
           </p>
         </div>
 
         {isLoading ? (
           <div className="flex justify-center items-center p-4">
-            <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-blue-500" />
+            <div className="animate-spin rounded-full h-6 w-6 border-2 border-border border-t-primary" />
           </div>
         ) : error ? (
-          <div className="p-4 text-center text-sm text-red-500">{error}</div>
+          <div className="p-4 text-center text-sm text-destructive">{error}</div>
         ) : (
           <ScrollArea className="max-h-[300px]">
             <div className="p-2">
               {users.map((user) => (
                 <div
                   key={user.user_id}
-                  className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50"
+                  className="flex items-center gap-3 p-2 rounded-[var(--radius)] hover:bg-accent"
                 >
                   <Avatar className="h-8 w-8">
                     {user.profiles.avatar_url ? (
@@ -106,7 +106,7 @@ export default function RoomUsersPopover({ roomId }: RoomUsersPopoverProps) {
               ))}
 
               {users.length === 0 && (
-                <div className="py-4 text-center text-sm text-gray-500">
+                <div className="py-4 text-center text-sm text-muted-foreground">
                   No users found
                 </div>
               )}

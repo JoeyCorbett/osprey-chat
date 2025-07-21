@@ -58,10 +58,10 @@ export default function CourseCard({ course }: { course: Course }) {
           <Card className="hover:shadow-md cursor-pointer">
             <CardContent className="p-4 flex justify-between items-center">
               <div>
-                <p className="text-sm text-gray-600">{course.code}</p>
-                <p className="font-medium">{course.title}</p>
+                <p className="text-sm text-muted-foreground">{course.code}</p>
+                <p className="font-medium text-card-foreground">{course.title}</p>
               </div>
-              <ChevronRight className="text-gray-400" size={20} />
+              <ChevronRight className="text-muted-foreground" size={20} />
             </CardContent>
           </Card>
         </div>
@@ -75,7 +75,7 @@ export default function CourseCard({ course }: { course: Course }) {
           <div className="space-y-2">
             {loading ? (
               <div className="flex justify-center py-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-blue-500" />
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-border border-t-primary" />
               </div>
             ) : courseInfo.length > 0 ? (
               courseInfo.map((info) => (
@@ -85,25 +85,21 @@ export default function CourseCard({ course }: { course: Course }) {
                     setSelectedSection(info)
                     setSectionSelected(true)
                   }}
-                  className={`w-full px-4 py-3 text-left rounded-lg border ${
+                  className={`w-full px-4 py-3 text-left rounded-[var(--radius)] border ${
                     selectedSection?.section === info.section
-                      ? 'bg-black text-white border-gray-800 shadow-sm hover:bg-gray-900'
-                      : 'bg-white hover:bg-gray-50 border-gray-200 hover:border-gray-300'
+                      ? 'bg-primary text-primary-foreground border-primary shadow-sm hover:bg-primary/90'
+                      : 'bg-card hover:bg-accent border-border hover:border-border'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <span className="font-medium">{course.code}</span>
-                      <span className="text-gray-400">•</span>
-                      <span className="font-medium">
-                        {formatSection(info.section)}
-                      </span>
+                        <span className="font-medium">{course.code} • {formatSection(info.section)}</span>
                     </div>
                     <span
                       className={`text-sm ${
                         selectedSection?.section === info.section
-                          ? 'text-blue-100'
-                          : 'text-gray-600'
+                          ? 'text-primary-foreground/80'
+                          : 'text-muted-foreground'
                       }`}
                     >
                       {info.instructor}
@@ -112,7 +108,7 @@ export default function CourseCard({ course }: { course: Course }) {
                 </button>
               ))
             ) : (
-              <p className="text-gray-500 text-sm">No sections available</p>
+              <p className="text-muted-foreground text-sm">No sections available</p>
             )}
           </div>
           <JoinCourseButton

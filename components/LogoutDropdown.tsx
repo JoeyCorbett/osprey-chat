@@ -8,8 +8,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { LogOut } from 'lucide-react'
+import { LogOut, Settings } from 'lucide-react'
 import { useLogout } from '@/hooks/useLogout'
+import { gotoSettings } from '@/hooks/gotoSettings'
+
 
 interface LogoutDropdownProps {
   avatar: string
@@ -23,6 +25,7 @@ export default function LogoutDropdown({
   initials,
 }: LogoutDropdownProps) {
   const logout = useLogout()
+  const settings = gotoSettings()
 
   return (
     <DropdownMenu>
@@ -34,6 +37,10 @@ export default function LogoutDropdown({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>{name}</DropdownMenuLabel>
+        <DropdownMenuItem onSelect={settings}>
+          <Settings />
+          Settings
+        </DropdownMenuItem>
         <DropdownMenuItem onSelect={logout}>
           <LogOut />
           Sign out

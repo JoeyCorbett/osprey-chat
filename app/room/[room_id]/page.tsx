@@ -96,10 +96,10 @@ export default async function RoomPage({
 
   return (
     <div className="flex flex-col h-dvh">
-      <header className="p-3 sm:p-4 flex items-center justify-between border-b bg-white sticky top-0 z-10 shadow-sm">
+      <header className="p-3 sm:p-4 flex items-center justify-between border-b bg-background sticky top-0 z-10 shadow-sm">
         <Link
           href="/chats"
-          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+          className="p-2 rounded-[var(--radius)] hover:bg-accent transition-colors"
           aria-label="Back to chats"
         >
           <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -110,7 +110,7 @@ export default async function RoomPage({
             {room.sections.courses.code} -{' '}
             {room.sections.section.toString().padStart(3, '0')}
           </h1>
-          <div className="text-xs text-gray-500 truncate w-full text-center hidden md:block">
+          <div className="text-xs text-muted-foreground truncate w-full text-center hidden md:block">
             <span className="font-medium">{room.sections.courses.title}</span>
             <span className="mx-1">•</span>
             <span>{room.sections.instructor}</span>

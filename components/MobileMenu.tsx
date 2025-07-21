@@ -31,7 +31,7 @@ export default function MobileMenu({
         {isOpen ? <X size={28} /> : <Menu size={28} />}
       </button>
       <div
-        className={`absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-200 p-4 md:hidden z-50 ${
+        className={`absolute top-full left-0 w-full bg-background shadow-lg border-t border-border p-4 md:hidden z-50 ${
           isOpen ? 'block' : 'hidden'
         }`}
       >
@@ -39,31 +39,31 @@ export default function MobileMenu({
           {/* Navigation Links */}
           <Link
             href="/chats"
-            className="flex items-center justify-center text-center gap-2 w-full px-4 py-3 rounded-md text-gray-900 font-medium hover:bg-gray-100 transition"
+            className="flex items-center justify-center text-center gap-2 w-full px-4 py-3 rounded-md text-foreground font-medium hover:bg-accent transition"
             onClick={() => setIsOpen(false)}
           >
-            <MessageCircle size={20} className="text-gray-600" />
+            <MessageCircle size={20} className="text-muted-foreground" />
             Chats
           </Link>
 
           <Link
             href="/search"
-            className="flex items-center justify-center text-center gap-2 w-full px-4 py-3 rounded-md text-gray-900 font-medium hover:bg-gray-100 transition"
+            className="flex items-center justify-center text-center gap-2 w-full px-4 py-3 rounded-md text-foreground font-medium hover:bg-accent transition"
             onClick={() => setIsOpen(false)}
           >
-            <Search size={20} className="text-gray-600" />
+            <Search size={20} className="text-muted-foreground" />
             Search
           </Link>
 
           {/* Profile Section in a Row */}
-          <div className="flex items-center justify-center gap-3 px-4 py-3 border-t border-gray-200">
-            <Avatar className="h-10 w-10 border border-gray-300 shadow-sm">
+          <div className="flex items-center justify-center gap-3 px-4 py-3 border-t border-border">
+            <Avatar className="h-10 w-10 border border-border shadow-sm">
               <AvatarImage src={avatar} />
               <AvatarFallback className="text-lg font-semibold">
                 {initials}
               </AvatarFallback>
             </Avatar>
-            <span className="text-base font-semibold text-gray-900">
+            <span className="text-base font-semibold text-foreground">
               {name}
             </span>
           </div>
